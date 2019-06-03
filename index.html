@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Open MQTT Gateway Editor </title>
+    
+    <script src="./js/jquery.min.js"></script>
+   <script src="./js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="./js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.gritter.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
+  <script src="./js/ace-elements.min.js" type="text/javascript"></script>
+  <script src="./js/ace.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.blockUI.js" type="text/javascript"></script>
+  <script src="./js/common.js" type="text/javascript"></script>
+  
+  <script src="./js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.maskedinput.min.js" type="text/javascript"></script>
+  <script src="./js/underscore-min.js" type="text/javascript"></script>
+  <script src="./js/jquery.cookie.js" type="text/javascript"></script>
+
+  <script src="./js/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.validate.default.js" type="text/javascript"></script>
+  <script src="./js/jquery.validate.default.js" type="text/javascript"></script>
+  <script src="./js/sweetalert2.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.formautofill.js" type="text/javascript"></script>
+  <script src="./js/alasql.js" type="text/javascript"></script>
+  <script src="./js/sharelib.js" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="./css/device.css" type="text/css" media="screen,projection">
+	<link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/bootstrap-responsive.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/font-awesome.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/jquery.gritter.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/chosen.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/datepicker.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/ace.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/ace-responsive.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/ace-skins.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/sweetalert2.min.css" type="text/css" media="screen,projection">  
+
+  <script>
+    
+  $(document).ready(function () {   
+    app.readConfig();
+    console.log(config);
+    app.home();
+    
+    $( "body" ).undelegate( ".btn-choose-device","click").delegate( ".btn-choose-device", "click", function() {
+      let url = $(this).data("url");
+      var api_url = api_host+""+$(this).data("api-url");
+      $("#api_url").val(api_url);
+      // console.log(api_url);
+      $.get(url, function (data) {
+    
+        // console.log(data["device"]);
+        $( "#div_main" ).html(data);
+        
+      });    
+    })
+    
+
+  }); //End document ready
+
+
+  </script>
+
+</head>
+<body>
+
+<div id="div_main">
+<h3 class="header smaller red">CHOOSE YOUR DEVICE</h3>
+
+<div class="row-fluid">
+    <div class="span7">
+
+      <table style="width: 100%" class="table table-bordered table-striped tbl-devices">
+          <thead>
+          <tr>
+            <th style="width:5px">#</th>
+            <th style="width:10%">Device name</th>
+            <th style="width:10%">Device code</th>
+            <th ">Image</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          
+          <tbody>
+        
+        
+          </tbody>
+        </table>
+
+    </div>
+    <div class="span5">
+
+        <div class="widget-box pricing-box">
+            <div class="widget-header header-color-green">
+              <h5 class="bigger lighter">Open MQTT Gateway Overview</h5>
+            </div>
+
+            <div class="widget-body">
+              <div class="widget-main">
+                
+                        
+            <p>OpenMQTTGateway act as a WIFI or Ethernet gateway between your 433mhz/315mhz/Infrared/BLE/GSM/GPRS devices and a MQTT broker.</p>
+            
+            <p>The MQTT broker can be connected to your favorite home automation controller (Home Assistant, Openhab, Domoticz) or NodeRED, as long as it supports MQTT, the system can talk to the gateway and by the way your different devices on both directions.</p>
+            
+            <p><a target="_blank" class="" href="https://github.com/1technophile/OpenMQTTGateway/wiki">
+              <img style="border-radius:8px;border: 1px solid #ddd;" src="./img/OpenMQTTGateway.jpg" alt=""></a></p>
+            
+            <p>It can be installed on:</p>
+            <ul>
+              <li>Arduino uno(limited)/mega(advised) + W5100</li>
+              <li>ESP8266: NodeMCU V1.0 NodeMCU V2.0, NodeMCU V3.0, ESP8266 12F and Wemos D1</li>
+              <li>ESP32</li>
+              <li>
+                <p>Sonoff RF bridge.</p>
+            
+                <p>It enables to:</p>
+              </li>
+              <li>Send RF signals corresponding to received MQTT data (MQTT-&gt;RF)</li>
+              <li>Publish MQTT data related to a received 433Mhz signal (RF–&gt;MQTT)</li>
+              <li>Send RFM69 signals corresponding to received MQTT data (MQTT-&gt;RFM69)</li>
+              <li>Publish MQTT data related to a received RFM69 signal (RFM69–&gt;MQTT)</li>
+              <li>Send IR signal corresponding to received MQTT data (MQTT-&gt;IR)</li>
+              <li>Publish MQTT data related to received IR signal (IR–&gt;MQTT)</li>
+              <li>Publish MQTT data related to BLE beacons or Mi flora(BT–&gt;MQTT)</li>
+              <li>Publish MQTT data related to received SMS (2G–&gt;MQTT)</li>
+              <li>Send SMS corresponding to received MQTT data (MQTT-&gt;2G)</li>
+            </ul>
+            
+            <p>It supports also sensors; DHT, HC SR501, ADC, I2C bus, INA226, TSL2561
+            Or can actutate a relay.</p>
+            
+            <h2 id="functions">Functions:</h2>
+            <ul>
+              <li>Bidirectional, the gateway can send and receive signals, for example if you have RF wall plug you can either control them with your home automation software (MQTT–&gt;RF) or the physical remote control. When you press a button on the physical remote the wall plug will switch ON and the button in your home automation software (RF–&gt;MQTT) will be updated.</li>
+              <li>Signal duplicate removal, with RF of IR we get a lot of duplication, to avoid this the gateway is able to filter the number of code sent to the MQTT broker during a defined time <code class="highlighter-rouge">time_avoid_duplicate</code>.</li>
+              <li>BLE beacons detection, the gateway publish the beacons detected thanks to an HM-10 module and publish the signal strength of each module address. By this way you can easily address presence detection of people, animals or things.</li>
+              <li>Addons possibility, you could add directly to the gateway any sensor you want, just create a new <code class="highlighter-rouge">Z&lt;addon&gt; .ino</code> file into the gateway folder with your code and call it after <code class="highlighter-rouge">client.loop();</code> into <code class="highlighter-rouge">OpenMQTTGateway.ino</code>. The program is provided with a DHT sensor addon implementation (<code class="highlighter-rouge">ZaddonDHT.ino</code>)</li>
+              <li>Advanced signal details publication, so as to know the details of what the gateway receive it publish by MQTT to <code class="highlighter-rouge">subject433toMQTTAdvanced</code> for RF and <code class="highlighter-rouge">subjectIRtoMQTTAdvanced </code>for IR the details of the signal received (this signal has to be compatible with RCSwitch and IRRemote libraries to be read).</li>
+              <li>Acknowledgement, to be sure that the gateway received the payload from MQTT it sends an acknowledgement on a <code class="highlighter-rouge">user_defined</code> topic, <code class="highlighter-rouge">subjectGTWRFtoMQTT</code> for RF or <code class="highlighter-rouge">subjectGTWIRtoMQTT</code> for IR enabling to update the state of your switch or other component into your home automation.</li>
+              <li>Multi boards compatibility, the gateway has been currently tested with <strong>ESP8266 12F</strong>, <strong>NodeMCU V1</strong>, <strong>NodeMCU V2</strong>, <strong>Wemos D1 mini</strong>, <strong>Arduino Uno</strong>, <strong>ESP32</strong> (RF and BLE gateways) and the <strong>Arduino Mega</strong>.</li>
+              <li>Multi protocols handling, the gateway is based on RCSwitch, NewRemoteSwitch, RFM69, A6lib and IRRemote libraries, you can define the protocol you want to use.</li>
+              <li>Configuration by web portal with <strong>ESP8266</strong> based boards</li>
+            </ul>
+            
+            <p>See the <a href="https://github.com/1technophile/OpenMQTTGateway/wiki">wiki</a> for more information:<br>
+            https://github.com/1technophile/OpenMQTTGateway/wiki</p>
+            
+            <p>Download OpenMQTTGateway from the <a href="https://github.com/1technophile/OpenMQTTGateway/releases">releases page</a></p>
+            
+            <p>The reference sheet, with the list of all functions, pinouts is <a href="https://docs.google.com/spreadsheets/d/1_5fQjAixzRtepkykmL-3uN3G5bLfQ0zMajM9OBZ1bx0/edit#gid=0">here</a></p>
+            
+            <p>A list of supported 433mhz devices (and others) is available <a href="https://docs.google.com/spreadsheets/d/1_5fQjAixzRtepkykmL-3uN3G5bLfQ0zMajM9OBZ1bx0/edit#gid=2126158079">here</a>, door/window sensors, PIR sensors, smoke detectors, weather stations…</p>
+            
+            <p>A list of compatible components to build your gateway is available <a href="https://docs.google.com/spreadsheets/d/1_5fQjAixzRtepkykmL-3uN3G5bLfQ0zMajM9OBZ1bx0/edit#gid=1323184277">here</a>, nodemcu, esp32, emitters and receivers…</p>
+            
+
+
+            </div>
+              <div>
+                <a href="#" class="btn btn-block btn-success">
+                  <span>Open MQTT Gateway</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+
+    </div>
+</div><!-- end div row-fluid -->
+
+</div> <!-- end div_main -->
+
+<input type="hidden" value="" id="api_url">
+  </body>
+</html>
+
+  <!-------- TEMPLATE DE RENDER DU LIEU TU JSON CUA DATATABLE ----------------->
+
+<script type="text/template" class="template" id="tpl-datatable">
+  <% 
+  var tr_count = 0;  
+  _.each(rows, function(row){
+    tr_count++;
+  %>
+  <%= row.id %>
+  <tr>
+      <td><%= tr_count %></td>
+      <td>
+        <b><a href="#id"  class="btn-choose-device" data-api-url = "/iots/index.php?option=com_omg&view=omg&task=device&format=raw&id=<%= row.id %>" data-url="./device.html"><%= row.name %></a></b>
+      </td>
+      <td><%= row.code %></td>
+      <td><img style="width:85%;margin-bottom:10px;border-radius:8px;max-width:120px;border: 1px solid #ddd;" src="./img/<%=row.image %>" ></td>
+      <td><%= row.description %></td>
+  </tr> 
+ 
+  <% })  
+  
+  %>
+  
+  </script>	

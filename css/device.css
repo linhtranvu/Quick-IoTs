@@ -1,0 +1,49 @@
+/* :not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+} */
+input, button, textarea, :focus {
+    outline: none; // You should add some other style for :focus to help UX/a11y
+}
+
+img {
+   width:85%;margin-bottom:10px;border-radius:8px;max-width:120px;border: 1px solid #ddd;
+}
+
+.toolbar{
+    position: fixed;
+    left: 0;
+    top: 0;
+	width: 100%;
+	height: 30px;	
+	background-color: #393939;
+	z-index: 20;
+	padding: 2px 2px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #eee; 
+    border-radius: 3px;
+    background-color: #d8d8d8;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #a3a3a3; 
+    border-radius: 3px;
+    border:1px solid  #7e7e7e;;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555E69; 
+} 
