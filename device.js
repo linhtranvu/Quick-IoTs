@@ -1,7 +1,6 @@
 var device = "";
 var cats = "";
 var fields = "";
-var fileLocation = config.fileLocation;
 
 $(document).ready(function () {
 		
@@ -11,18 +10,18 @@ $(document).ready(function () {
 		$(".electron").remove();
 	}  	
 
-	$(".div_container_device").css("height", $(window).height()-50);	
+	$(".div_container_device").css("height", $(window).height()-70);	
+	
    //Get all data from server (JSON) and processing data
-    $.get($('#api_url').val(), function (data, textStatus, jqXHR) {
-        //console.log(data);        
-        device = data["device"];
+	$.get($('#api_url').val(), function (data, textStatus, jqXHR) {
+		device = data["device"];
 		cats = data["cat"];
 		modules = data["modules"];
 		fields = data["field"];    
-			
-		$(".btn-device").html("<i>"+data["device"].name+"</i>");				
-		app.drawFields("device",$("#tbl_omg_config"),"");  //Draw main layout		
-		app.drawModule(data); //Draw module field;
+		
+	$(".btn-device").html("<i>"+data["device"].name+"</i>");				
+	app.drawFields("device",$("#tbl_omg_config"),"");  //Draw main layout		
+	app.drawModule(data); //Draw module field;
 
 
 	}); //end get data
@@ -131,6 +130,31 @@ $(document).ready(function () {
 	});
 
 
+	$(".btn-change-device	").click(function(){
+			swal({
+					title: 'Change device?',
+					html: `
+You will go to change device layout. You have to resetup PIN to fit your device. All working <b>will be loss</b> if not saved!
+	`,
+					type: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Change device'
+					}).then((result) => {
+					if (result.value) {
+
+						$.get("./new.html", function (data) {
+							$( "#div_main" ).html(data);
+							 
+						});   										
+					}
+			});	
+							
+	});
+	
+
+
 
 	//Generate code button
 	
@@ -148,7 +172,7 @@ $(document).ready(function () {
 					title: 'Are you sure to save?',
 					html: `<ul>
 						<li>All config files wil be overwrite by setting from this Editor</li>
-						<li>Files are saved to "${fileLocation}". Change in Menu->Preference</li>
+						<li>Files are saved to "${fileLocation}"</li>
 					</ul>`,
 					type: 'warning',
 					showCancelButton: true,

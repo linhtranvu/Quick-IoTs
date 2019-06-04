@@ -4,10 +4,11 @@
 
 	<div class="btn-group">
 
-		<span class="btn btn-small btn-info btn-home " ><i class="icon-home"></i> HOME</span>
+		<!-- <span class="btn btn-small btn-info btn-home " ><i class="icon-home"></i> HOME</span> -->
 		<span class="btn btn-small btn-primary btn-generate-config " ><i class="icon-edit"></i> Generate Config</span>
-		<span class="btn btn-small btn-success btn-save-overwrite electron" ><i class="icon-save"></i> Save to Files</span>
-		<span class="btn btn-small btn-warning btn-load-file electron" ><i class="icon-book"></i> Load Files</span>
+		<span class="btn btn-small btn-success btn-save-overwrite electron" ><i class="icon-save"></i> Save Config files</span>
+		<!-- <span class="btn btn-small btn-warning btn-load-file electron" ><i class="icon-book"></i> Load Files</span> -->
+		<span class="btn btn-small btn-warning btn-change-device electron" ><i class="icon-laptop"></i> Change device</span>
 		<span class="btn btn-small btn-grey browser" >Download desktop app to "Save" and "Load" config</span>
 
 	</div>
@@ -30,7 +31,7 @@
 <table style="width: 100%" class="table table-bordered table-condensed" id="tbl_omg_config">
 	<tr>
 		<td colspan="4" class="">
-			<strong>VERSION: <input type="text" style="width:50px" readonly name="OMG_VERSION" value="0.9.1"> 
+			<strong>OMG VERSION: <input type="text" style="width:50px" readonly name="OMG_VERSION" value="0.9.1"> 
 			. Released date: Apr 22, 2019</strong>
 			
 		</td>
@@ -167,10 +168,24 @@
 <div class="span3 div_container_device" style="overflow-y: scroll;margin-left:3px;width:25%">
 
 	<textarea class="copy_wrapper" style="display:none"></textarea>
+		
+	<div class="widget-box pricing-box electron">
+		<div class="widget-header header-color-orange">
+			<h5 class="bigger lighter">Log</h5>
+		</div>
+
+		<div class="widget-body">
+			<div class="widget-main" style="padding: 0px">
+					<div class="well code-container" style="" id="div_log"></div>			
+			</div>
+		</div>
+	</div>
+
+
 	<div class="div_file_wrapper">
 		<h3 class="header smaller red">User_config.h <span class="btn btn-mini btn-success btn-copy"><i class="icon-document"></i> Copy to Clipboard</span> 
 		</h3>
-		<div class="well" style="font-size:0.9em" id="div_user_config">Set config, choose your modules and the press "Generate Config"</div>
+		<div class="well" style="font-size:0.9em;height: 200px; overflow-y: scroll;" id="div_user_config">Set config, choose your modules and the press "Generate Config"</div>
 		
 	<div>
 

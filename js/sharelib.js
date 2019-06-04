@@ -1,16 +1,23 @@
 const dev_mode = 0;
 const production_server = "http://49.156.54.103"
 const userAgent = navigator.userAgent.toLowerCase();
+var fileLocation;
 
 var fs = "";
 var readline = "";
 var api_host = "";
 var config = "";
-
+var { dialog } = "";
+var parser;
+var path;
 
 if (userAgent.indexOf(' electron/') > -1) { //Electron code only
     fs = require('fs');
     readline = require('readline');
+    var { dialog } = require('electron').remote;
+    path = require('path');
+
+
 
 }else{ //Browser code only
     $(".electron").remove();
@@ -20,22 +27,32 @@ if (userAgent.indexOf(' electron/') > -1) { //Electron code only
 var app = {
     home:function(){
 
-      $.blockUI();
+      (async function() {
+        try {
+            $.blockUI();   
+          var url = api_host+"/iots/index.php?option=com_omg&view=omg&task=home&format=raw";
+          console.log(url);
+          var response = await axios.get(url);
+            // console.log(response);
+            $( ".tbl-devices tbody" ).html(_.template($("#tpl-datatable").html(),{rows:response.data["device"]}));  
+            $.unblockUI();
 
-      let url = api_host+"/iots/index.php?option=com_omg&view=omg&task=home&format=raw";
-      $.get(url, function (data, textStatus, jqXHR) {
-        // console.log(data["device"]);
-        $( ".tbl-devices tbody" ).html(_.template($("#tpl-datatable").html(),{rows:data["device"]}));  
-        $.unblockUI();
-        
-      });
+        } catch (error) {
+          console.error(error);
+          $.unblockUI();
+        }
+      })();     
+
+
     },
 
     readConfig:function() {
     
-        var json = "{";
+        var json = "";
 
         if (userAgent.indexOf(' electron/') > -1) {
+
+            $(".browser").remove();
 
             if (!fs.existsSync("./preference.json")){
                 fs.copyFileSync('./resources/app/preference.json', 'preference.json', (err) => {
@@ -43,26 +60,43 @@ var app = {
                 });
                 swal('',"Welcome! This is your first time using OMG Editor. Config file created!");
             }            
-            var contents = JSON.parse(fs.readFileSync('preference.json', 'utf8'));
+
+            config = app.readJson('preference.json');
+            
+        }else{
+            $(".electron").remove();
+            json += `{"devMode":"${dev_mode}",`;
+            json += `"productionServer":"${production_server}"}`;
+            config = JSON.parse(json);
+        }          
+
+        
+        api_host = (config.devMode == "1" )?"http://localhost": config.productionServer;
+        return config;
+        
+    },
+
+    readJson:function(filePath){
+
+        try {
+
+            var json = "{";
+            var contents = JSON.parse(fs.readFileSync(filePath, 'utf8'));
             for(i=0;i<contents.length;i++){
                 json += `"${contents[i].name}":"${contents[i].value}"`;
                 if(i < (contents.length - 1)){
                     json += ",";
                 }
             }
-            
-        }else{
-            json += `"devMode":"${dev_mode}",`;
-            json += `"productionServer":"${production_server}"`;
-        }          
+            json += "}";
+            config = JSON.parse(json);
+            return config;
 
-
-        json += "}";
-
-        config = JSON.parse(json);
-        api_host = (config.devMode == "1" )?"http://localhost": config.productionServer;
-        return config;
+        } catch(e) {
+            swal({"type":"error","text":e}); // error in the above string (in this case, yes)!
+        }
         
+
     },
 
 	readInputToGenCode:function(currentButton){
@@ -123,7 +157,7 @@ var app = {
 							<h3 class="header smaller red">${moduleFileName}  
                                 <span class="btn btn-mini btn-success btn-copy"><i class="icon-document"></i> Copy to Clipboard</span> 
                             </h3>
-							<div class="well" id="${id_code_container}">${module_config}</div>
+							<div class="well code-container" id="${id_code_container}">${module_config}</div>
 						</div>					
 						`);
 
@@ -180,13 +214,14 @@ var app = {
 				type: 'success',
 				title: 'Save successfully',
 				text: 'Config files has been saved',				
-			});
+            });
+            app.log(`Save ${fileLocation}${fileName}`)
 		});			
     },
 
-	loadAllFile:function(){
+	loadAllFile:function(fileLocation){
 		// $.blockUI();
-		app.loadFile(fileLocation+'User_config.h');
+        app.loadFile(fileLocation+'User_config.h');
 		setTimeout(function() {
 
 			$(".module_chooser").each(function(i,el){
@@ -199,9 +234,15 @@ var app = {
 		}, 1000);	
 	},    
     
-	loadFile:function(fileName){  
+	loadFile:function(fileName){
 
-        if (fs.existsSync(fileName)) {
+        var error = 0;
+               
+        if (fs.existsSync(fileName)) {  
+
+        
+            app.log(`Read file ${fileName}`);
+
             indexLine = 0;
             var field_json = "{";
             var rd = readline.createInterface({
@@ -211,7 +252,13 @@ var app = {
             });
             
             rd.on('line', function(line) {
-    
+
+            try {    
+                // console.log(line);
+                if(line.startsWith('/*')){
+                    throw "Config files in this project not generate by OMG Editor. You need to save first!";
+                   
+                }               
                 if(line.startsWith("//")){
                     //comment line
                 }else{
@@ -294,23 +341,34 @@ var app = {
                     field_json += '"'+name+'":"'+value+'",';
     
                 }
+            
+            }catch(e) {
+                // console.error(e);
+                    error = 1;
+                    swal({
+                        type:"error",
+                        title:"Error reading .h config files",
+                        html:"Error when reading .h config files. You need to save from Editor first to prevent errors. Files saved from Editor will work perfectly next time when opening project."
+                    });
+            }//end of try catch   
             })
             .on('close', function(line) {
                 field_json = field_json.substring(0, field_json.length-1);
                 field_json += "}";
                 field_json = JSON.parse(field_json);
                 console.log(field_json);
-                $("#frm_omg").autofill( field_json );
+                if(error == 0){
+                    $("#frm_omg").autofill( field_json );
+                }               
     
                 $.unblockUI();
                 
                 
-            });		
+            });	
+         	
         }else{
-            swal("","No OMG config files found! Please check folder in preference");
+            throw "No OMG config files found!";
         }
-
-
 
 
 
@@ -438,7 +496,95 @@ var app = {
 
         })//end loop module 
                 
+    },//end drawModule function
+
+    openProject:function(data){
+
+       
+
+        var config = "";
+
+        try{
+            var folderPath = dialog.showOpenDialog({
+                properties: ['openDirectory']
+            });
+            fileLocation = `${folderPath[0]}${path.sep}`;
+            var editorJsonPath = fileLocation+"omg_editor.json";   
+            // console.log(editorJsonPath);
+
+            if (fs.existsSync(editorJsonPath)) {
+                $.blockUI();
+                config = app.readJson(editorJsonPath);
+                   
+                var api_url = api_host+"/iots/index.php?option=com_omg&view=omg&task=device&format=raw&id="+config.device_id;
+                $("#api_url").val(api_url);       
+
+                $.get("./device.html", function (data) {
+                    // console.log(data["device"]);
+                    $( "#div_main" ).html(data);
+                    setTimeout(function(){
+                         app.loadAllFile(fileLocation); 
+                         $.unblockUI();
+                    }, 3000);
+                    // setTimeout(app.loadAllFile(fileLocation), 5000);               
+                    // app.loadAllFile(fileLocation);
+                    
+                });                
+    
+            }else{ //NO Editor.json found. Load new layout
+                swal("","No omg_editor.json, new project found. You need to choose your device to continue!")
+                $.get("./new.html", function (data) {
+                    $( "#div_main" ).html(data);
+                     
+                });          
+            }    
+
+        }catch(e){
+            // swal(e.message);
+            $.unblockUI();
+        }
+
+
+
+        
+
+                
+    },//end drawModule function   
+
+
+    saveProjectEditorJson:function(device_id,device_code){
+
+        try{
+
+            json = `[{"name":"device_id","value":"${device_id}"},{"name":"device_code","value":"${device_code}"}]`;
+
+            fs.writeFile(fileLocation+"omg_editor.json",json, function (err) {
+                if(err){
+                    swal("","An error ocurred creating the file "+ err.message)
+                }else{
+                    swal({
+                        type: 'success',
+                        title: 'Device for project saved successfully!',
+                        text: '',				
+                    });
+                    app.log(`Save ${fileLocation}/omg_editor.json` )
+    
+                }			
+    
+            });	            
+
+        }catch(e){
+
+        }
+
+	
+
+    },
+
+    log:function (msg) {  
+        $("#div_log").append(msg+"<br>");
     }
+    
 
 };//end app
 
