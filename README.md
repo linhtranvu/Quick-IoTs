@@ -7,10 +7,10 @@
 
 ## Deploy and Build
 - Deploy for Web: Upload all file except `"modules"` folder
-- Build for desktop app: Run electron-forge make. A folder name `out` will contain the build version
+- Build for desktop app: Run `electron-forge make`. A folder name `out` will contain the build version
 
 ## API server
-- This tool get JSON data of devices, fields... from a `PHP MYSQL for API server`.
+- This tool get JSON data of devices, fields... from a `PHP MYSQL API server`.
 
 ## Develop guide
 - Code is HTML5 and JS so could run as web app
