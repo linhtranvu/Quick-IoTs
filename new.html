@@ -18,12 +18,15 @@ $(document).ready(function () {
             $.blockUI();   
             var response = await axios.get(url);
             $( "#div_main" ).html(response.data);
-            app.saveProjectEditorJson(device_id,device_code);
-            
-            setTimeout(function(){
-                app.loadAllFile(fileLocation); 
-                $.unblockUI();
-            }, 3000);               
+			if (userAgent.indexOf(' electron/') > -1) { //Electron code only
+				app.saveProjectEditorJson(device_id,device_code);            
+				setTimeout(function(){
+					app.loadAllFile(fileLocation); 
+					$.unblockUI();
+				}, 3000);               
+			}else{
+				$.unblockUI();
+			}
           
         })()
 
