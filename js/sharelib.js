@@ -367,7 +367,7 @@ var app = {
             });	
          	
         }else{
-            throw "No OMG config files found!";
+            swal "No OMG config files found!";
         }
 
 
