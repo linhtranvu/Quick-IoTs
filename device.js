@@ -17,7 +17,9 @@ $(document).ready(function () {
 		device = data["device"];
 		cats = data["cat"];
 		modules = data["modules"];
-		fields = data["field"];    
+		fields = data["field"];   
+		device_pin = data["device_pin"];  
+		
 		
 	$(".btn-device").html("<i>Device: "+data["device"].name+"</i>");				
 	app.drawFields("device",$("#tbl_omg_config"),"");  //Draw main layout		

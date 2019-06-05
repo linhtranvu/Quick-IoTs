@@ -491,7 +491,17 @@ var app = {
 				div_module_chooser.hide().find(":input").attr("module-connect",0); //Hide not write
 		
 				currentModule =  alasql('select * from ? where id = "'+module_id+'" ',[modules]);				
-				div_module_chooser.find(".config_default_sourcecode").val(currentModule[0].config_default_sourcecode); //Load preset souce code
+                div_module_chooser.find(".config_default_sourcecode").val(currentModule[0].config_default_sourcecode); //Load preset souce code
+                //Set PIN label
+                div_module_chooser.find(':input[name*="PIN"]').each(function(){
+                    $(this).find("option").each(function () {  
+                        sql = 'select * from ? where pin_num = "'+$(this).val()+'" and device_id =  "'+device.id+'"';
+                        pinData =  alasql(sql,[device_pin]);
+                        pinLabel = pinData[0].pin_code !== "" ? ` (${pinData[0].pin_code} - ${pinData[0].other_function})`: "";
+                        $(this).text($(this).text()+pinLabel);
+                    });
+
+                }); 
 			});  
 
 
