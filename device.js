@@ -19,7 +19,7 @@ $(document).ready(function () {
 		modules = data["modules"];
 		fields = data["field"];    
 		
-	$(".btn-device").html("<i>"+data["device"].name+"</i>");				
+	$(".btn-device").html("<i>Device: "+data["device"].name+"</i>");				
 	app.drawFields("device",$("#tbl_omg_config"),"");  //Draw main layout		
 	app.drawModule(data); //Draw module field;
 

@@ -367,7 +367,8 @@ var app = {
             });	
          	
         }else{
-            throw "No OMG config files found!";
+            swal({type:"error",text:"No OMG config files found! Set your settings and Save."});
+            $.unblockUI();
         }
 
 
