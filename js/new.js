@@ -135,7 +135,7 @@ var newApp = {
 
 		await downloadGitRepo_p(`linhtranvu/Quick-IoTs/#${server_config.editor_version}`, downloadPath);
 
-		if (fs.existsSync(`${downloadPath}/version/version_${server_config.editor_version}`)) {
+		if (fs.existsSync(`${downloadPath}/version/version_${server_config.editor_version}.ini`)) {
 
 			swal({
 				type:"success",title:"Update successfully! Please restart app to work again!"
