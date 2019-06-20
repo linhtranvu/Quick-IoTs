@@ -5,17 +5,27 @@
 	<div class="btn-group">
 
 		<!-- <span class="btn btn-small btn-info btn-home " ><i class="icon-home"></i> HOME</span> -->
-		<span class="btn btn-small btn-primary btn-generate-config " ><i class="icon-edit"></i> Generate Config</span>
-		<span class="btn btn-small btn-success btn-save-overwrite electron" ><i class="icon-save"></i> Save Config files</span>
-		<!-- <span class="btn btn-small btn-warning btn-load-file electron" ><i class="icon-book"></i> Load Files</span> -->
-		<span class="btn btn-small btn-warning btn-change-device electron" ><i class="icon-laptop"></i> Change device</span>
-		<span class="btn btn-small btn-grey browser" >Download desktop app to "Save" and "Load" config</span>
+		
+		<span class="btn btn-mini btn-success btn-save-overwrite electron" ><i class="icon-save"></i> Save</span>
+		<span class="btn btn-mini btn-warning btn-change-device electron" ><i class="icon-laptop"></i> Change device</span>
+		<span class="btn btn-mini btn-danger btn-quick-build electron" ><i class="icon-cloud-upload"></i> Build & Upload</span>
+
+		<span class="btn btn-mini btn-info btn-serial electron" ><i class="icon-bolt"></i> Serial Monitor</span>
+		<span class="btn btn-mini btn-primary btn-mqtt electron" ><i class="icon-comments-alt"></i> MQTT server</span>
+
+		<span class="btn btn-mini btn-primary btn-generate-config browser" ><i class="icon-edit"></i> Generate</span>
+		<span class="btn btn-mini btn-warning browser btn-browser-notwork" data-original-title="This feature only work with desktop version. Please download to use"><i class="icon-laptop"></i> Change device</span>
+		<span class="btn btn-mini btn-danger browser  btn-browser-notwork" data-original-title="This feature only work with desktop version. Please download to use"><i class="icon-cloud-upload"></i> Build&Upload</span>
+		<span class="btn btn-mini btn-info browser  btn-browser-notwork" data-original-title="This feature only work with desktop version. Please download to use"><i class="icon-bolt"></i> Serial Monitor</span>
+		<span class="btn btn-mini btn-primary browser  btn-browser-notwork" data-original-title="This feature only work with desktop version. Please download to use"><i class="icon-comments-alt"></i> MQTT server</span>		
+		<!-- <span class="btn btn-small btn-grey browser" >Download desktop app to "Save" and "Load" config</span> -->
 
 	</div>
 
 
 	<div class="btn-group" style="float:right">
-		<span class="btn btn-small btn-grey btn-device" ></span>
+			<a onclick="app.openUrl(currentDevice.link)" class="btn btn-mini btn-pink btn-help" ><i class="icon  icon-lightbulb"></i> HELP ME!</a>
+		<span class="btn btn-mini btn-grey btn-device" ></span>
 	
 	</div>	
 
@@ -115,7 +125,7 @@
 
 	<tr>
 		<td colspan="4" class="widget-header header-color-red3" class="hasTooltip" tooltip="DEFINE THE MODULES YOU WANT BELOW " ><strong>
-		II. MODULES CONFIGURATION</strong> </td>
+		II. MODULES CONFIGURATION -  [<a style="color:#ccdfff" href="https://docs.google.com/spreadsheets/d/1_5fQjAixzRtepkykmL-3uN3G5bLfQ0zMajM9OBZ1bx0/edit#gid=1323184277" target="_blank">List module,devices,compatiple PIN..</a>]</strong> </td>
 	</tr>
 	<tr>
 		<td colspan="4">
@@ -136,13 +146,14 @@
             tr_count++;
         %>
             <tr>
-				<td >
+				<td class="<%= row.class %>">
                     <input type ="checkbox" data-command="#define" data-module-id="<%= row.id %>"  data-module-code="<%= row.code %>"
-                    data-filename="<%= row.config_file_name %>" value="<%= row.code %>"
+					data-filename="<%= row.config_file_name %>" value="<%= row.code %>"
+					exclude-module = "<%= row.exclude_module %>"
                     name="<%= row.name %>"  id="<%= row.name %>" class="module_chooser">
                     <!-- <span class="lbl"> </span>                                -->
                 </td>
-				<td ><%= row.label %></td>
+				<td class="<%= row.class %>"><%= row.label %></td>
 				<td>
 					<div class="div_module_chooser"></div>
 				</td>
@@ -171,12 +182,14 @@
 		
 	<div class="widget-box pricing-box electron">
 		<div class="widget-header header-color-orange">
-			<h5 class="bigger lighter">Log</h5>
+			<h5 class="bigger lighter">App log</h5>
 		</div>
 
 		<div class="widget-body">
-			<div class="widget-main" style="padding: 0px">
-					<div class="well code-container" style="" id="div_log"></div>			
+			<div class="widget-main code-container" style="padding: 0px;height: 250px">
+				<table class="table table-bordered table-condensed table-striped" id="div_log" >
+					
+				</table>										
 			</div>
 		</div>
 	</div>
@@ -185,7 +198,7 @@
 	<div class="div_file_wrapper">
 		<h3 class="header smaller red">User_config.h <span class="btn btn-mini btn-success btn-copy"><i class="icon-document"></i> Copy to Clipboard</span> 
 		</h3>
-		<div class="well" style="font-size:0.9em;height: 200px; overflow-y: scroll;" id="div_user_config">Set config, choose your modules and the press "Generate Config"</div>
+		<div class="well code-container"  id="div_user_config">Set config, choose your modules and the press "Generate Config"</div>
 		
 	<div>
 

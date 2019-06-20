@@ -2,6 +2,7 @@ const dev_mode = 0;
 const production_server = "http://49.156.54.103"
 const userAgent = navigator.userAgent.toLowerCase();
 var fileLocation;
+var arduinoPath;
 
 var fs = "";
 var readline = "";
@@ -10,14 +11,97 @@ var config = "";
 var { dialog } = "";
 var parser;
 var path;
+var SerialPort;
+var ReadSerialLine;
+var port;
+var ipcMain;
+var { ipcRenderer } = "";
+var mqtt;
+var ini;
+var { shell } = "";
+var saveFileFinish;
+
+var arduinoAppName;
+var cmd;
+var operatingSystem;
+var pref;
+var currentOs;
+var currentDevice;
+var remote;
+var electronApp;
+
+var apiData;
+var device;
+var cats;
+var fields;
+var os_all;
+var portList;
+var downloadGitRepo;
+var util;
+var serialWindow = null;
+var mqttWindow = null;
+var server_config;
+
 
 if (userAgent.indexOf(' electron/') > -1) { //Electron code only
-    fs = require('fs');
-    readline = require('readline');
-    var { dialog } = require('electron').remote;
-    path = require('path');
+  util = require('util');
+  fs = require('fs-extra');
+  readline = require('readline');
+  downloadGitRepo = require("download-git-repo") ; 
+  var { dialog } = require('electron').remote;
+  var { shell } = require('electron').remote;
+
+  
+  remote = require('electron').remote;
+  electronApp = remote.app;  
 
 
+
+  path = require('path');
+  ini = require('ini');
+  var { ipcRenderer } = require('electron');
+  
+  var shell = require('electron').shell;
+  //open links externally by default
+  $(document).on('click', 'a[href^="http"]', function(event) {
+      event.preventDefault();
+      shell.openExternal(this.href);
+  });    
+  
+  /////////////////TEST CODE/////////////////
+
+  /////////////////TEST CODE/////////////////
+	fs.removeSync("./build_in_process")
+  //Open COM serial port of device and CMD tool
+  SerialPort = require('serialport');
+  ReadSerialLine = require('@serialport/parser-readline');
+  
+  cmd = require('node-cmd');
+
+  //OS define
+  operatingSystem = require("os");
+
+  ipcRenderer.on('openPreferenceIPC', function() {
+    app.openPreference();  
+  })     
+
+  //Main menu to Client
+  mqtt = require('mqtt');
+  ipcRenderer.on('openMQTT', function() {
+    app.openMQTT();  
+  })       
+
+  ipcRenderer.on('openSerial', function() {
+    app.openSerial();  
+  })    
+
+  ipcRenderer.on('openProject', function() {
+    app.openProject();  
+  })  
+  
+  ipcRenderer.on('newProject', async function() {
+    await newApp.newProject();  
+  })  
 
 }else{ //Browser code only
     $(".electron").remove();
@@ -25,20 +109,161 @@ if (userAgent.indexOf(' electron/') > -1) { //Electron code only
 
 
 var app = {
+
+    loadOS:function(){
+      query = `select * from ? where name = "${operatingSystem.type()}" ` ;   
+      currentOs =  alasql(query,[os_all])[0];
+      currentOs.username = operatingSystem.userInfo().username;
+      currentOs.release = operatingSystem.release();
+      console.log(currentOs);
+    },
+
+    openMQTT:function () { 
+
+			if(mqttWindow == null){
+
+				const { BrowserWindow } = require('electron').remote;
+				mqttWindow = new BrowserWindow({
+					 width: 800, height: 600, frame: true,
+					 webPreferences: {
+						nodeIntegration: true
+					}          
+				});
+	
+				mqttWindow.on('closed', () => {
+					mqttWindow = null
+				})		
+				
+				mqttWindow.setMenu(null);
+				mqttWindow.show();
+				// win.webContents.openDevTools();
+			 
+				mqttWindow.loadFile('mqtt.html');
+				// win.maximize();					
+
+			}
+  
+
+      
+
+    },
+
+    openUrl:function (url) {
+        
+
+
+            const { BrowserWindow } = require('electron').remote;
+        
+            win = new BrowserWindow({
+                    width: 800, height: 600, frame: true,
+                    webPreferences: {
+                    nodeIntegration: true
+                }          
+            });
+	
+            
+            win.setMenu(null);
+            win.show();
+            // win.webContents.openDevTools();
+            console.log(url)
+
+            if(url.indexOf("http") >= 0 ){
+                win.loadURL(url);	
+            }else{
+                win.loadFile(url);	
+            }
+            
+            // win.maximize();
+
+
+    }, 
+
+    openSerial:function () {
+        
+			if(fs.existsSync("./build_in_process")){ 
+
+				swal({type:"error",title:"Build in process, cannot open serial!"})
+				return false;
+
+			}
+
+			if(serialWindow == null){
+
+				const { BrowserWindow } = require('electron').remote;
+			
+				serialWindow = new BrowserWindow({
+						width: 800, height: 600, frame: true,
+						webPreferences: {
+						nodeIntegration: true
+					}          
+				});
+ 
+				serialWindow.on('closed', () => {
+					serialWindow = null;
+					port.close();
+				})		
+				
+				serialWindow.setMenu(null);
+				serialWindow.show();
+				// serialWindow.webContents.openDevTools();
+				
+				serialWindow.loadFile('serial_monitor.html');	
+				// win.maximize();
+			}
+   
+
+    },    
+
+
+
+    loadApiData:async function(){
+
+        try {
+          $.blockUI();   
+          var url = api_host+"/iots/index.php?option=com_omg&view=omg&task=device&format=raw&callback=";
+          apiData = await axios.get(url);
+          apiData = apiData.data
+          device = apiData["device"];
+          cats = apiData["cat"];
+          modules = apiData["modules"];
+          fields = apiData["field"];   
+          device_pin = apiData["device_pin"];  
+          os_all = apiData["os"];  
+
+          var json = "{";
+          var contents = (apiData["config"]);
+          for(i=0;i<contents.length;i++){
+                  json += `"${contents[i].name}":"${contents[i].value}"`;
+                  if(i < (contents.length - 1)){
+                          json += ",";
+                  }
+          }
+          json += "}";
+          server_config = JSON.parse(json);          
+                        
+
+          $.unblockUI();
+
+        } catch (error) {
+          console.log(error);
+          $.unblockUI();
+        }
+
+    },    
+
     home:function(){
 
       (async function() {
         try {
             $.blockUI();   
-          var url = api_host+"/iots/index.php?option=com_omg&view=omg&task=home&format=raw";
-          console.log(url);
+          var url = api_host+"/iots/index.php?option=com_omg&view=omg&task=home&format=raw&callback=";
           var response = await axios.get(url);
             // console.log(response);
             $( ".tbl-devices tbody" ).html(_.template($("#tpl-datatable").html(),{rows:response.data["device"]}));  
             $.unblockUI();
 
         } catch (error) {
-          console.error(error);
+          console.log(error);
           $.unblockUI();
         }
       })();     
@@ -46,7 +271,7 @@ var app = {
 
     },
 
-    readConfig:function() {
+    readPref:function() {
     
         var json = "";
 
@@ -54,25 +279,37 @@ var app = {
 
             $(".browser").remove();
 
-            if (!fs.existsSync("./preference.json")){
-                fs.copyFileSync('./resources/app/preference.json', 'preference.json', (err) => {
+            if (!fs.existsSync("./preference.ini")){
+                fs.copyFileSync('./resources/app/preference.default.ini', 'preference.ini', (err) => {
                     if (err) throw err;                    
                 });
                 swal('',"Welcome! This is your first time using OMG Editor. Config file created!");
             }            
 
-            config = app.readJson('preference.json');
+            // pref = app.readJson('preference.json');
+            pref = ini.parse(fs.readFileSync('./preference.ini', 'utf-8'));
+            pref.appPath = electronApp.getAppPath();  
+
+            if (fs.existsSync("./resources")) { //Running in build mode
+              pref.appSrc = pref.appPath+"/resources/app";  
+            }else{
+              pref.appSrc = pref.appPath;
+            }
+
             
+            
+
+
+
         }else{
             $(".electron").remove();
             json += `{"devMode":"${dev_mode}",`;
             json += `"productionServer":"${production_server}"}`;
-            config = JSON.parse(json);
+            pref = JSON.parse(json);
         }          
 
         
-        api_host = (config.devMode == "1" )?"http://localhost": config.productionServer;
-        return config;
+        api_host = (pref.devMode == "1" )?"http://localhost": pref.productionServer;
         
     },
 
@@ -89,8 +326,9 @@ var app = {
                 }
             }
             json += "}";
-            config = JSON.parse(json);
-            return config;
+            jsonObject = JSON.parse(json);
+            // console.log(jsonObject);
+            return jsonObject;
 
         } catch(e) {
             swal({"type":"error","text":e}); // error in the above string (in this case, yes)!
@@ -99,7 +337,7 @@ var app = {
 
     },
 
-	readInputToGenCode:function(currentButton){
+	readInputToGenCode:function(writeFile){
         // input:checkbox:not(:checked)
 		// WRITING USER_CONFIG.H FILE
 		var main_config = "";
@@ -119,7 +357,7 @@ var app = {
 																		
 						// main_config += ` <%= echo $this->device->config_default_sourcecode %> `;
 						$("#div_user_config").html(main_config);
-						if(currentButton.hasClass("btn-save-overwrite")){
+						if(writeFile == 1){
 							app.saveFile("User_config.h","#div_user_config");								
 						}	
 						
@@ -140,7 +378,7 @@ var app = {
 			if($(this).prop("checked")){
 				
 				module_div = $(this).closest("tr").find(".div_module_chooser");
-				module_config = module_div.find(".config_default_sourcecode").val()+"<br>\r\n";
+				module_config = nl2br(module_div.find(".config_default_sourcecode").val())+"<br>\r\n";
 				module_input = module_div.find(":input").not(":input[data-hide-code='1'],.checkbox_show:not(:checked),:input[module-connect='0']");
 				
 				numModuleInput = module_input.length;
@@ -161,7 +399,7 @@ var app = {
 						</div>					
 						`);
 
-						if(currentButton.hasClass("btn-save-overwrite")){
+						if(writeFile == 1){
 							app.saveFile(moduleFileName,"#"+id_code_container);
 						}
 					}					
@@ -170,12 +408,23 @@ var app = {
 
 		});	//END WRITING MODULE FILES
     },
+
+
     
     //Generate Code function
     generateCode:function(object) {
 
-       
-        command = typeof object.data("command") !== "undefined" ? object.data("command") : "#define"; 
+       if(typeof object.data("command") !== "undefined" ){
+            if(object.data("command") !== ""){
+                command = object.data("command");
+            }else{
+                command = "#define";
+            }               
+       }else{
+            command = "#define";
+       }
+        // command = typeof object.data("command") !== "undefined" ? object.data("command") : "#define"; 
+        // command = object.data("command") !== "" ?  object.data("command") : "#define"; 
         
         attribute_name = typeof  object.data("param-name") !== "undefined" ? object.data("param-name") : object.attr("name")
         
@@ -205,7 +454,7 @@ var app = {
 
 
 	saveFile:function(fileName, selector){
-		// console.log($(""+selector));
+        // console.log($(""+selector));
 		fs.writeFile(fileLocation+""+fileName,$(""+selector).text(), function (err) {
 			if(err){
 				alert("An error ocurred creating the file "+ err.message)
@@ -219,7 +468,7 @@ var app = {
 		});			
     },
 
-	loadAllFile:function(fileLocation){
+	loadAllFile:function(){
 		// $.blockUI();
         app.loadFile(fileLocation+'User_config.h');
 		setTimeout(function() {
@@ -237,11 +486,15 @@ var app = {
 	loadFile:function(fileName){
 
         var error = 0;
+
+        console.log(fileName);
                
         if (fs.existsSync(fileName)) {  
 
         
             app.log(`Read file ${fileName}`);
+            var command_list = alasql('SELECT command FROM ? where command <> "" GROUP BY command',[fields]);
+
 
             indexLine = 0;
             var field_json = "{";
@@ -253,10 +506,23 @@ var app = {
             
             rd.on('line', function(line) {
 
-            try {    
+            try {
+                
+                line = line.trim(); //Remove space                
+                line_is_right = 0;
+                for(i = 0;i<command_list.length;i++){ //If start word equal to command word (defined, const...)
+                    if(line.startsWith(command_list[i].command)){
+                        line_is_right = 1;
+                    }
+                }
+
+                if(line_is_right == 0){
+                    line = "//";
+                }
+
                 // console.log(line);
-                if(line.startsWith('/*')){
-                    throw "Config files in this project not generate by OMG Editor. You need to save first!";
+                if(line.startsWith('/*')    ){
+                    // throw "Config files in this project not generate by OMG Editor. You need to save first!";
                    
                 }               
                 if(line.startsWith("//")){
@@ -321,7 +587,7 @@ var app = {
                         if (line.indexOf('""') > 0){
                             value = '';
                         }else{
-                            valueInQuote = line.match(/"([^']+)"/);
+                            valueInQuote = line.match(/"([^']+)"/); //Match word inside Quote "
                             // value = valueInQuote[1].replace(/\"+/g, ' ');//remove quote in value
                             value = valueInQuote[1]//remove quote in value
                             // console.log(value);
@@ -332,8 +598,9 @@ var app = {
                         valueInQuote = line.match(/{([^']+)}/);
                         value = "{"+valueInQuote[1]+"}";//remove quote in value
                         // console.log(value);					
-                    }
-                    else{
+                    }else if(field_line.length == 2){ //Command line with NO VALUE, only 2 words
+                        value = '';
+                    }else{
                         value = field_line[field_line.length - 1].trim();
                     } //End Process value data if has quote	
                     
@@ -385,7 +652,7 @@ var app = {
         
         query = 'select * from ? where template = "'+template+'" and parent_code = ""';
         if(template == "module"){
-            query += ' and (module = "'+module_code+'" or module = "" )'
+            query += ` and ("${module_code}" in module  )`;
         }
     
         catInTemplate =  alasql(query,[cats]);
@@ -394,9 +661,12 @@ var app = {
         catInTemplate.forEach(function(cat) {
     
             field_html = `
-            <tr class="tr_cat " style="cursor: pointer;" data-cat-code="${cat.code}">
-                <td colspan="${total_field_row*2}" class="widget-header ${cat.class} ">
-                    <strong>${cat.name.toUpperCase()}</strong> <span style="float:right">[+ Click to expand +]</span>
+            <tr class="tr_cat "  style="" data-cat-code="${cat.code}">
+                <td colspan="${total_field_row*2}" class="widget-header ${cat.class} " >
+                    <span style="cursor: pointer;line-height:25px;padding 0px 8px">
+                        <strong >${cat.name.toUpperCase()}</strong> 
+                    </span>
+                    <span style="float:right">[+ Click to expand +]</span>
                 </td>
             </tr>`;
     
@@ -404,7 +674,7 @@ var app = {
                 //console.log(cat.code);
                 
                 // var fields_in_cat = defiant.search(fields, '//*[cat="'+cat.code+'"]');
-                var fields_in_cat = alasql('select * from ? where cat = "'+cat.code+'" and ((device = "" or device like "%'+device.code+'%" ) and exclude_device not like "%'+device.code+'%" )',[fields]);
+                var fields_in_cat = alasql('select * from ? where cat = "'+cat.code+'" and ((device = "" or device like "%'+currentDevice.code+'%" ) and exclude_device not like "%'+currentDevice.code+'%" )',[fields]);
     
                 fields_in_cat.forEach(function(field) {
                     current_row_field = field.cat !== prev_cat ? 1 : current_row_field;  
@@ -421,8 +691,9 @@ var app = {
                     is_hide_in_code = (field.is_hide == 1 && field.checkbox_show == 1) ? "1" : "";
     
                     field_html += (current_row_field == 1)  ? "<tr class='"+cat.code+"' style='display:"+cat.display+"' >" : ""; //NEW ROW if current field = 1
-    
-                    field_html += "<td>"+field.label+"</td>";
+                    
+                    label = field.label == "" ? field.field_name : field.label;
+                    field_html += '<td class="hasTooltip" data-original-title="'+field.tooltip+'">'+label+'</td>';
     
                     field_html += "<td>";
     
@@ -434,7 +705,8 @@ var app = {
                     field_attrib = ' name="'+field.field_name+'"  '+ param_name+' '; 
                     field_attrib += ' data-quote="'+ field.value_quote+'" '+readonly+' ';
                     field_attrib += ' data-original-title="'+field.tooltip+'" ';
-                    field_attrib += ' class = "hasTooltip field auto_field required '+field.class+'"  data-command="'+field.command+'" data-command-end="'+field.command_end+'"';
+                    required = field.required == 0 ? "" : " required ";
+                    field_attrib += ' class = "hasTooltip field auto_field '+required+' '+field.class+'"  data-command="'+field.command+'" data-command-end="'+field.command_end+'"';
                     field_attrib += ' style = "display:'+is_hide+'"  data-hide-code="'+ is_hide_in_code+'" '; 
     
                     switch(field.field_type){
@@ -494,8 +766,9 @@ var app = {
                 div_module_chooser.find(".config_default_sourcecode").val(currentModule[0].config_default_sourcecode); //Load preset souce code
                 //Set PIN label
                 div_module_chooser.find(':input[name*="PIN"]').each(function(){
+                    $(this).closest("td").css("background-color","#df6868");
                     $(this).find("option").each(function () {  
-                        sql = 'select * from ? where pin_num = "'+$(this).val()+'" and device_id =  "'+device.id+'"';
+                        sql = 'select * from ? where pin_num = "'+$(this).val()+'" and device_id =  "'+currentDevice.id+'"';
                         pinData =  alasql(sql,[device_pin]);
                         pinLabel = pinData[0].pin_code !== "" ? ` (${pinData[0].pin_code} - ${pinData[0].other_function})`: "";
                         $(this).text($(this).text()+pinLabel);
@@ -509,51 +782,123 @@ var app = {
                 
     },//end drawModule function
 
-    openProject:function(data){
+    checkMainForm:function(){
+        let ret = $("#frm_omg").find(":input").not(':input[module-connect="0"]').valid();
+        
+        if(ret == false){
+            swal({type:"error",title:"Please check required field!"});
+        }        
 
-       
-
-        var config = "";
-
-        try{
-            var folderPath = dialog.showOpenDialog({
-                properties: ['openDirectory']
-            });
-            fileLocation = `${folderPath[0]}${path.sep}`;
-            var editorJsonPath = fileLocation+"omg_editor.json";   
-            // console.log(editorJsonPath);
-
-            if (fs.existsSync(editorJsonPath)) {
-                $.blockUI();
-                config = app.readJson(editorJsonPath);
-                   
-                var api_url = api_host+"/iots/index.php?option=com_omg&view=omg&task=device&format=raw&id="+config.device_id;
-                $("#api_url").val(api_url);       
-
-                $.get("./device.html", function (data) {
-                    // console.log(data["device"]);
-                    $( "#div_main" ).html(data);
-                    setTimeout(function(){
-                         app.loadAllFile(fileLocation); 
-                         $.unblockUI();
-                    }, 3000);
-                    // setTimeout(app.loadAllFile(fileLocation), 5000);               
-                    // app.loadAllFile(fileLocation);
-                    
-                });                
-    
-            }else{ //NO Editor.json found. Load new layout
-                swal("","No omg_editor.json, new project found. You need to choose your device to continue!")
-                $.get("./new.html", function (data) {
-                    $( "#div_main" ).html(data);
-                     
-                });          
-            }    
-
-        }catch(e){
-            // swal(e.message);
-            $.unblockUI();
+		let pinArr= [];
+		pin = $(":input[name*='PIN']").not(':input[module-connect="0"]');
+		
+		for(i=0;i<pin.length;i++){		
+			pinArr[i] = pin.eq(i).val();
         }
+        
+		
+		if(hasDuplicates(pinArr)){
+
+			swal({
+				type: "error",
+				text: "Duplicate PIN found. Please check your PIN on board and fix"
+			});
+			ret = false;
+        }
+        
+
+
+        return ret;
+    },
+
+    save:function(writeFile = 0){
+
+
+        ret = app.checkMainForm();
+		
+		if(ret == true){
+
+
+			// if(currentButton.hasClass("btn-save-overwrite")){
+
+			// 	swal({
+			// 		title: 'Are you sure to save?',
+			// 		html: `<ul>
+			// 			<li>All config files wil be overwrite by setting from this Editor</li>
+			// 			<li>Files are saved to "${fileLocation}"</li>
+			// 		</ul>`,
+			// 		type: 'warning',
+			// 		showCancelButton: true,
+			// 		confirmButtonColor: '#3085d6',
+			// 		cancelButtonColor: '#d33',
+			// 		confirmButtonText: 'Save and overwrite'
+			// 		}).then((result) => {
+			// 		if (result.value) {
+
+			// 			app.readInputToGenCode(currentButton);
+										
+			// 		}
+			// 	});	
+			// }else{
+			// 	app.readInputToGenCode(currentButton);
+            // }		
+            
+            app.readInputToGenCode(writeFile);
+
+
+		}
+    },
+
+    openFolder:function(){
+      var folderPath = dialog.showOpenDialog({
+        properties: ['openDirectory']
+      });
+      return `${folderPath[0]}${path.sep}`;      
+    },
+
+    openProject:function(folder = 0){
+
+      var config = "";
+
+      if(folder == 0){
+        fileLocation = app.openFolder();
+      }else{
+        fileLocation = folder;
+      }
+
+      if (fs.existsSync(fileLocation+"lib")) {
+        fs.renameSync(fileLocation+"lib", fileLocation+"libraries")
+      }
+
+
+      var editorJsonPath = fileLocation+"omg_editor.json";   
+      // console.log(editorJsonPath);
+
+      if (fs.existsSync(editorJsonPath)) {
+          $.blockUI();
+          config = app.readJson(editorJsonPath);
+          query = `select * from ? where id = "${config.device_id}" ` ;   
+          currentDevice =  alasql(query,[device])[0];          
+
+          $.get("./device.html", function (data) {
+              // console.log(data["device"]);
+              $( "#div_main" ).html(data);
+              setTimeout(function(){
+              app.loadAllFile(); 
+                    $.unblockUI();
+              }, 3000);
+              
+          });                
+
+      }else{ //NO Editor.json found. Load new layout
+          swal("","New project or Open existed OMG source code. Choose your device to continue!")
+          $.get("./new.html", function (data) {
+              $( "#div_main" ).html(data);
+                
+          });          
+      }    
+
+
 
 
 
@@ -593,13 +938,98 @@ var app = {
     },
 
     log:function (msg) {  
-        $("#div_log").append(msg+"<br>");
-    }
+        $("#div_log").prepend(`<tr><td><b>${getTime()}</b>:${nl2br(msg)}</td></tr><br>`);
+    },
+
+    openPreference:function(){
+      (async function() {
+          $('#div_modal').modal('toggle');
+          try {
+            var response = await axios.get("./preference.html");
+            $("#div_modal").html(response.data)
+            // console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
+      })();     
+    },
+
+    serialPlotter:function(){
+ 
+
+
+      // port.open(function (err) {
+      // if (err) {
+      //   $("#frm_serial tbody").append(`
+      //     <tr>
+      //         <td>${getTime()}</td>
+      //         <td style="color:red">'Error opening port: '${err.message}. Check if you are running Serial Plotter (Arduino IDE) or any COM listener tool</td>
+      //     </tr>`);      
+      //   }
+
+      // Because there's no callback to write, write errors will be emitted on the port:
+        // port.write('main screen turn on')
+      // })
+
+     
+    },
+
+    checkPort:async function(){
+      portList = await SerialPort.list(); 
+      //  console.log(portList);
+      return portList;
+    },
+    
+    mqttHelp:function(){
+      swal({
+        type:"warning",
+        title: "MQTT server receives and sends data to and from device. Try this:",
+        html:`<div style="text-align:left">
+        <ul>
+          <li>Use free test server. Host: "test.mosquitto.org", port 1883</li>
+          <li>Or download <a href="https://mosquitto.org/download/" target="_blank">MOSQUITTO</a>, install. Set host to "localhost" or IP of machine Mosquitto installed. Port 1883</li>
+        </ul>
+        </div>`
+      })
+    },
+
+  
     
 
 };//end app
 
 
 
+function nl2br (str, is_xhtml) {
+    if (typeof str === 'undefined' || str === null) {
+        return '';
+    }
+    var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
+    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
+}
+
+function checkTime(i) {
+  return (i < 10) ? "0" + i : i;
+}
+
+function getTime() {
+  var today = new Date(),
+  h = checkTime(today.getHours()),
+  m = checkTime(today.getMinutes()),
+  s = checkTime(today.getSeconds());
+  return h + ":" + m + ":" + s
+}   
 
 
+//Generate code button
+function hasDuplicates(array) {
+    var valuesSoFar = Object.create(null);
+    for (var i = 0; i < array.length; ++i) {
+        var value = array[i];
+        if (value in valuesSoFar) {
+            return true;
+        }
+        valuesSoFar[value] = true;
+    }
+    return false;
+}

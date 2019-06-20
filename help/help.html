@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+  <head>
+    <meta http-equiv="Content-Language" content="en-us">
+    <meta charset="UTF-8">
+    <title>Quick IOTs App</title>
+    
+    <script src="../js/jquery.min.js"></script>
+   <script src="../js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+  <script src="../js/jquery.gritter.min.js" type="text/javascript"></script>
+  <script src="../js/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
+  <script src="../js/ace-elements.min.js" type="text/javascript"></script>
+  <script src="../js/ace.min.js" type="text/javascript"></script>
+  <script src="../js/jquery.blockUI.js" type="text/javascript"></script>
+  <script src="../js/common.js" type="text/javascript"></script>
+  
+  <script src="../js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+  <script src="../js/jquery.maskedinput.min.js" type="text/javascript"></script>
+  <script src="../js/underscore-min.js" type="text/javascript"></script>
+  <script src="../js/jquery.cookie.js" type="text/javascript"></script>
+
+  <script src="../js/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="../js/jquery.validate.default.js" type="text/javascript"></script>
+  <script src="../js/jquery.validate.default.js" type="text/javascript"></script>
+  <script src="../js/sweetalert2.min.js" type="text/javascript"></script>
+  <script src="../js/jquery.formautofill.js" type="text/javascript"></script>
+  <script src="../js/alasql.js" type="text/javascript"></script>
+  <script src="../js/sharelib.js" type="text/javascript"></script>
+  <script src="../js/axios.min.js" type="text/javascript"></script>
+  <script src="../js/build-upload.js" type="text/javascript"></script>
+  <script src="../js/new.js" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="../css/device.css" type="text/css" media="screen,projection">
+	<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/bootstrap-responsive.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/jquery.gritter.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/chosen.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/datepicker.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/ace.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/ace-responsive.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/ace-skins.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="../css/sweetalert2.min.css" type="text/css" media="screen,projection">  
+
+  <script>
+    
+  $(document).ready(function () {
+    
+  
+
+
+
+  
+
+
+  $('.hasTooltip').tooltip({"html": true,"container": "body"});
+
+}); //End document ready
+
+
+  </script>
+
+	</head>
+<body style="margin:15px">
+
+  
+  
+<h3 class="header lighter red">Understand the flow</h3>  
+  
+<p>It is important to understand the flow of Quick IoTs. </p>
+<table style="width: 100%">
+	<tr>
+		<td>
+		<img alt="" src="../img/quickiotmodel.png" style="width: 600px; height: 612px" class="myimg">&nbsp;</td>
+		<td>
+		<p><strong>SENSOR DATA FLOW&nbsp;</strong></p>
+		<ul>
+			<li>Device get data from <span class="label label-important arrowed-in">sensors</span>, send to <span class="label label-important arrowed-in">MQTT server</span></li>
+			<li><span class="label label-important arrowed-in">App server</span> get data from <span class="label label-important arrowed-in">MQTT server</span></li>
+			<li>User use <span class="label label-important arrowed-in">web browser, mobile</span> to view data sent from sensors</li>
+		</ul>
+		<p>&nbsp;</p>
+		<p><strong>GATEWAY DATA FLOW (IR, RF...)</strong>&nbsp;</p>
+		<ul>
+			<li><span class="label label-important arrowed-in">Users</span> use &nbsp;web browser, mobile to send IR,RF.. code</li>
+			<li><span class="label label-important arrowed-in">App server</span> send these code to <span class="label label-important arrowed-in">MQTT server</span></li>
+			<li><span class="label label-important arrowed-in">Device</span> get data from <span class="label label-important arrowed-in">MQTT server</span>, convert to IR code, RF code...
+			</li>
+			<li>IR code, RF code... send to other devices like <span class="label label-important arrowed-in">TV, fans, light 
+			bulb</span> to control. Eg, turn on/off</li>
+		</ul>
+		<p>&nbsp;</p>
+		<p><strong>MQTT SERVER</strong>&nbsp;</p>
+		<ul>
+			<li>MQTT like a big chatroom, devices send and receive message in a 
+			sub chatroom</li>
+			<li>The best MQTT server is <span class="label label-important arrowed-in">
+	Mosquitto</span> , <a target="_blank" href="https://mosquitto.org/download/">
+	download and install here</a>. </li>
+			<li>Default user and Password of Mosquitto is 
+	blank</li>
+		</ul>
+		<p>&nbsp;</p>
+		<p><strong>APP SERVER</strong>&nbsp;</p>
+		<ul>
+			<li>Supply user interface to web browser, mobile</li>
+			<li>Base on <a class="label label-important arrowed-in" href="https://nodered.org/" target="_blank">Node-RED</a>, we have Prebuilt Project to make a beautiful 
+			App for User in TWO click</li>
+		</ul>
+		
+		&nbsp;</td>
+	</tr>
+</table>
+&nbsp;<h3 class="header lighter red">What I need to begin</h3>  
+  
+<p>To begin, you need to buy these thing</p>
+<table style="width: 100%" class="table table-condensed table-bordered">
+	<tr>
+		<td><a href="../img/esp8266.jpg" target="_blank">
+		<img alt="" src="../img/esp8266.jpg" style="width: 150px; height: 144px" class="myimg"></a></td>
+		<td>A device: NodeMCU ESP8266, NodeMCU ESP32... Price and every info you
+		<strong><a target="_blank" href="device.html">need about device is here</a></strong></td>
+	</tr>
+	<tr>
+		<td><a href="../img/dht11.png" target="_blank">
+		<img alt="" src="../img/dht11.png" style="width: 150px; height: 120px" class="myimg"></a></td>
+		<td>Module: A sensor, Gateway.. To understand, lets begin with:<br>
+		<br>
+		<br>
+		<strong>- First: </strong>Using <strong>
+		<a target="_blank" href="module.html">Temperature and Humidity Sensor: 
+		DHT11</a></strong>&nbsp;<br>
+		<strong>- Second: </strong>Using <a href="module.html"><strong>IR 
+		Receiver and Emitter</strong></a>, so you could control TV </td>
+	</tr>
+	<tr>
+		<td><a href="../img/cable.png" target="_blank">
+		<img alt="" src="../img/cable.png" width="405" height="292" style="width: 150px; height: 140px" class="myimg"></a></td>
+		<td>Cable to connect device and modules: You should buy all 03 type:
+		<a target="_blank" href="https://sea.banggood.com/120pcs-20cm-Male-To-Female-Female-To-Female-Male-To-Male-Color-Breadboard-Jumper-Cable-Dupont-Wire-p-974006.html?rmmds=detail-top-buytogether-auto&amp;cur_warehouse=CN">
+		Male-Male, Male-Female and Female-Female</a></td>
+	</tr>
+	<tr>
+		<td><a href="../img/breadboard.jpg" target="_blank">
+		<img alt="" src="../img/breadboard.jpg" style="width: 150px; height: 112px" class="myimg"></a></td>
+		<td>A breadboard so we could put device and module on and most important 
+		is to share power. Because the limit of VCC,GND on device (2 - 3), if we 
+		cannot share VCC and GND, we only could plug maximum 2 - 3 module. In 
+		short, breadboard work likes a mini
+		<a target="_blank" href="../img/power-outlit.png">Power outlet</a>.&nbsp;
+		<br>
+		Learn how to use
+		<a target="_blank" href="https://learn.sparkfun.com/tutorials/how-to-use-a-breadboard/all">
+		breadboard here</a>. However when starting, <span class="red">if you are 
+		so confusing, just f<strong>orget breadboard and connect cable directly</strong> 
+		from device to module</span></td>
+	</tr>
+</table>
+<h3 class="header lighter red">What is PIN, OUT, GND, VCC and How I plug/connect 
+module</h3>  
+  
+<p>Understand PIN, GND, VCC... help you plug modules, sensors 
+to device in 5 seconds. </p>
+<ul>
+	<li><span class="label label-warning">GND&nbsp; </span>is cathode ( - ), <strong>
+	<span class="label label-warning">VCC</span></strong> is anode 
+	(+). To power any module, we plug cable from GND on module/sensor to GND on device, VCC 
+	on module to VCC (5 
+	Voltage) on device (or 3V if module required a 3V power)</li>
+	<li><strong class="label label-warning"><span>PIN</span>:</strong> on device, PIN is where we connect cable. PIN is 
+	numbered 0,1,2,3 or label D1,D2,D3.. There is some special PIN label like: 
+	RX,TX, or HMISO... They are for special purpose and we will learn them when 
+	connect module. </li>
+	<li><strong><span class="label label-warning">OUT/D0/D1/D2/A0</span>: </strong>In module, you will see beside VCC, 
+	GND is many strange character: OUT/D0/D1/D2/A0 ....It mean you must connect 
+	this to PIN on device. Which PIN to connect need test and you cannot plug 
+	randomly to make module work. With Quick IoTs, we help you by specify what 
+	PIN the device connect to when activating module.&nbsp; </li>
+</ul>
+<p class="text-center">
+<table style="width: 100%">
+	<tr>
+		<td>
+		<img alt="" src="../img/arduino-dht11-sensor-1602-LCD-hardware-circuit.jpg" style="width: 400px; height: 225px; float: right" class="myimg"></td>
+		<td>
+		<img alt="" src="../img/dht11.png" width="329" height="220" style="width: 281px; height: 225px; float: left" class="myimg"></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="text-center">
+		<span class="label label-info arrowed-in-right arrowed" >Temperature sensor (DHT11) with VCC,GND, OUT connect to device through 
+		breadboard&nbsp;</span></td>
+	</tr>
+</table>
+</p>
+<h3 class="header lighter red">How do I send data from device to internet and 
+display data in web/mobile</h3>  
+  
+<p>In flow, we use MQTT server to exchange data from device to user. </p>
+<ul>
+	<li>Data send from device to MQTT, web/mobile app get data from MQTT to draw 
+	chart, value. </li>
+	<li>User send data to MQTT (IR code, RF code), device get data and emit IR 
+	code, RF code to control TV, Lightbub, Air Conditioner</li>
+	<li>The best MQTT server is <span class="label label-important arrowed-in">
+	Mosquitto</span> , <a target="_blank" href="https://mosquitto.org/download/">
+	download and install here</a>. Default user and Password of Mosquitto is 
+	blank</li>
+</ul>
+<h3 class="header lighter red">What is I2C</h3>  
+  
+<table style="width: 100%">
+	<tr>
+		<td>Many modules include &quot;<strong>I2C</strong>&quot; in name, so what are they. Some 
+modules have a lot of pins that we must use many cable to connect module to 
+device. <strong>I2C</strong><span class="label label-info arrowed-in-right arrowed"> 
+(Inter-Intergrated Circuit)&nbsp; </span>is a lifesaver now. In short, it work 
+as a middle device between module and your device, so you plug module to I2C, 
+and I2C only has 2 pins, connect them device is more simple.&nbsp;</td>
+		<td>
+		<img alt="" src="../img/i2c.png" style="width: 220px; height: 218px" class="myimg">&nbsp;</td>
+	</tr>
+</table>
+&nbsp;<p>&nbsp;</p>
+<p>&nbsp;</p>
+  
+</body>
+</html>

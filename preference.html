@@ -1,123 +1,120 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
- 
-    <script src="./js/jquery.min.js"></script>
-    <script src="./js/bootstrap.min.js" type="text/javascript"></script>
-   <script src="./js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
-   <script src="./js/jquery.gritter.min.js" type="text/javascript"></script>
-   <script src="./js/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
-   <script src="./js/ace-elements.min.js" type="text/javascript"></script>
-   <script src="./js/ace.min.js" type="text/javascript"></script>
-   <script src="./js/jquery.blockUI.js" type="text/javascript"></script>
-   <script src="./js/common.js" type="text/javascript"></script>
-   
-   <script src="./js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-   <script src="./js/jquery.maskedinput.min.js" type="text/javascript"></script>
-   <script src="./js/underscore-min.js" type="text/javascript"></script>
-   <script src="./js/jquery.cookie.js" type="text/javascript"></script>
- 
-   <script src="./js/jquery.validate.min.js" type="text/javascript"></script>
-   <script src="./js/jquery.validate.default.js" type="text/javascript"></script>
-   <script src="./js/jquery.validate.default.js" type="text/javascript"></script>
-   <script src="./js/sweetalert2.min.js" type="text/javascript"></script>
-   <script src="./js/jquery.formautofill.js" type="text/javascript"></script>
-   <script src="./js/alasql.js" type="text/javascript"></script>
-   <script src="./js/sharelib.js" type="text/javascript"></script>
- 
-   <link rel="stylesheet" href="./css/device.css" type="text/css" media="screen,projection">
-     <link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/bootstrap-responsive.min.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/font-awesome.min.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/jquery.gritter.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/chosen.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/datepicker.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/ace.min.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/ace-responsive.min.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/ace-skins.min.css" type="text/css" media="screen,projection">
-   <link rel="stylesheet" href="./css/sweetalert2.min.css" type="text/css" media="screen,projection">  
- 
-
-
 <script type="text/javascript">
 
-
-    
+   
 
 $(document).ready(function () {
 
 
-    config = app.readConfig();
-    // console.log(config);
-    $("#frm_preference").autofill(config);
+    $("#frm_preference").autofill(pref);
 
     
     $(":input").addClass("required");
     $(".btn-save").click(function(){
         ret = $("#frm_preference").valid();
         if(ret == true){
-            fs.writeFile("preference.json",JSON.stringify($("#frm_preference").serializeArray()).replace(/\\/g,"\\\\"), function (err) {
-                if(err){
-                    alert("An error ocurred creating the file "+ err.message)
-                }			
+          pref.devMode = $("#devMode").val()
+          pref.productionServer = $("#productionServer").val()
+          pref.arduinoPath = $("#arduinoPath").val()
+
+          try{
+            fs.writeFileSync('./preference.ini', ini.stringify(pref));
                 swal({
-                    type: 'success',
-                    title: 'Save successfully',
-                    text: 'Preference saved',				
-                });
-            });	
+                  type: 'success',
+                  title: 'Save successfully',
+                  text: 'Preference saved',				
+                });                  
+                app.readPref();
+          }
+          catch(e){
+            swal("An error ocurred creating the file "+ e.message)
+          }
+          
 
         }else{
             swal("You must set all settings!")
         }
     })
+
+    $(".btn-arduino-path-folder").click(function (e) { 
+      try{
+        var folderPath = dialog.showOpenDialog({
+            properties: ['openDirectory'],
+            title: "Path to Arduino IDE,eg: D:\\Program Files (x86)\\Arduino"
+        });
+        fileLocation = `${folderPath[0]}${path.sep}`;
+        $("#arduinoPath").val(fileLocation);
+      }catch(e){  }
+    });
 });
 </script>   
-  
-</head>
-<body>
-<h1>PREFERENCEs <span style="font-size: 0.5em">- Save to "preference.json"</span></h1> 
+
+<!-- Modal content-->
+<div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>PREFERENCES <span style="font-size: 0.5em">- Save to "preference.json"</span></h4>
+    </div>
+    <div class="modal-body">
+
+      <form id="frm_preference">
+          <table style="width: 100%" class="table table-bordered table-striped tbl-devices">
+            <thead>
+            <tr>
+              <th style="width:5px">#</th>
+              <th style="width:10%">Config</th>
+              <th style="width:10%">Attribute</th>
+              <th>Description</th>
+            </tr>
+            </thead>
+            
+            <tbody>
+          
+              <tr>
+                  <td></td>
+                  <td>Dev mode</td>
+                  <td>
+                      <select name="devMode" id="devMode">
+                          <option value="0">False</option>
+                          <option value="1">True</option>
+                      </select>
+                  </td>
+                  <td>Dev mode = true will activate usage of local API and other debug feature. Dont touch if you dont know what to do</td>
+              </tr>  
+              <tr>
+                  <td></td>
+                  <td>Production server</td>
+                  <td><input type = "text" name="productionServer" id="productionServer"/></td>
+                  <td>Production Server (IP,Domain), http with NO SLASH at end. Example: http://49.156.54.130</td>
+              </tr>      
+              <tr>
+                  <td></td>
+                  <td>Arduino Path</td>
+                  <td>
+                    <div class="btn-group">
+                    <input readonly type = "text" name="arduinoPath" id="arduinoPath"/>
+                    <btn class="btn btn-small btn-info btn-arduino-path-folder"><i class="icon-folder-open"></i></btn>
+                  </div>
+                  </td>
+                  <td>Path to Arduino</td>
+              </tr>    
+                          
+          
+            </tbody>
+          </table>
+          </form>
 
 
-<div style="padding: 5px 20px">
-    <span class="btn btn-danger btn-small btn-save"><i class="icon-save"></i> Save preference</span>
+
+    </div>  <!-- end div body -->   
+    <div class="modal-footer">
+      <span class="btn btn-danger btn-small btn-save"><i class="icon-save"></i> Save preference</span>
+      <button type="button" class="btn btn-default btn-small" data-dismiss="modal">Close</button>
+    </div>
 </div>
-
-<br/>
-<form id="frm_preference">
-<table style="width: 80%" class="table table-bordered table-striped tbl-devices">
-	<thead>
-	<tr>
-		<th style="width:5px">#</th>
-		<th style="width:10%">Config</th>
-		<th style="width:10%">Attribute</th>
-		<th>Description</th>
-	</tr>
-	</thead>
   
-	<tbody>
 
-    <tr>
-        <td></td>
-        <td>Dev mode</td>
-        <td>
-            <select name="devMode">
-                <option value="0">False</option>
-                <option value="1">True</option>
-            </select>
-        </td>
-        <td>Dev mode = true will activate usage of local API and other debug feature. Dont touch if you dont know what to do</td>
-    </tr>  
-    <tr>
-            <td></td>
-            <td>Production server</td>
-            <td><input type = "text" name="productionServer"/></td>
-            <td>Production Server (IP,Domain), http with NO SLASH at end. Example: http://49.156.54.130</td>
-        </tr>      
 
-	</tbody>
-</table>
-</form>
-</body>
+
+
+
+

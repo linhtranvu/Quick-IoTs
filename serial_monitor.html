@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Serial Monitor</title>
+    
+    <script src="./js/jquery.min.js"></script>
+   <script src="./js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="./js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.gritter.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
+  <script src="./js/ace-elements.min.js" type="text/javascript"></script>
+  <script src="./js/ace.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.blockUI.js" type="text/javascript"></script>
+  <script src="./js/common.js" type="text/javascript"></script>
+  
+  <script src="./js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.maskedinput.min.js" type="text/javascript"></script>
+  <script src="./js/underscore-min.js" type="text/javascript"></script>
+  <script src="./js/jquery.cookie.js" type="text/javascript"></script>
+
+  <script src="./js/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.validate.default.js" type="text/javascript"></script>
+  <script src="./js/jquery.validate.default.js" type="text/javascript"></script>
+  <script src="./js/sweetalert2.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.formautofill.js" type="text/javascript"></script>
+  <script src="./js/alasql.js" type="text/javascript"></script>
+  <script src="./js/sharelib.js" type="text/javascript"></script>
+  <script src="./js/axios.min.js" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="./css/device.css" type="text/css" media="screen,projection">
+	<link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/bootstrap-responsive.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/font-awesome.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/jquery.gritter.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/chosen.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/datepicker.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/ace.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/ace-responsive.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/ace-skins.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/sweetalert2.min.css" type="text/css" media="screen,projection">  
+
+
+  <script>
+    
+$(document).ready(function () {
+
+  async function beginSerial(){
+        await app.checkPort();
+        if(portList.length > 0){
+            
+            $("#port_name").html(portList[0].comName);
+
+          port = new SerialPort(portList[0].comName, { baudRate: 115200 });
+          const parser = new ReadSerialLine();
+          port.pipe(parser);
+          parser.on('data', function(line){
+              $("#tbl_serial tbody").append(`
+              <tr>
+                  <td>${getTime()}</td>
+                  <td>${line}</td>
+              </tr>`);
+
+            if( $("#tbl_serial tbody tr").length>100){
+                numRowRemove = $("#tbl_serial tbody tr").length - 100;
+                for(j=0;j<numRowRemove;j++){
+                    $("#tbl_serial tbody tr").eq(j).remove();
+                }
+            
+            }  
+            
+            
+					});//end parser
+					
+				}else{
+					swal({type:"error",title:"No device found!"})
+				}//
+
+    }; //end function begin serial
+	
+	beginSerial();
+
+	// (async function(){
+
+	// 	await beginSerial();
+	// 	setInterval(function(){
+		
+	// 	if(fs.existsSync("./build_in_process")){ //Rom is being built, folder build exists
+	// 		port.close();
+	// 		port_is_closed = 1;
+	// 		$("#tbl_serial tbody").append(`
+	// 		<tr>
+	// 				<td>${getTime()}</td>
+	// 				<td><b class="red">Build & Upload is running! Serial monitor stops and reopens when finish.</b></td>
+	// 		</tr>`);
+	// 	}else{
+	// 		beginSerial();
+	// 	}    
+
+	// 	},5000); 			
+	// })()
+	
+
+  $(".btn-serial-clear").click(function(){        
+    $("#tbl_serial tbody").html("");
+	})     
+
+  $('.hasTooltip').tooltip({"html": true,"container": "body"});
+
+}); //End document ready
+
+
+</script>
+
+</head>
+<body>
+
+
+<h3 class="header smaller lighter red">SERIAL MONITOR (DEVICE LOGGING) - PORT: <span id="port_name"></span>
+    <button type="button" class="btn btn-small btn-warning btn-serial-clear" >Clear</button>
+</h3>
+<div class="alert alert-block alert-info">For perfomance, only 100 last messsages display</div>
+<table style="width: 100%" class="table table-bordered table-condensed" id="tbl_serial">
+	<thead>
+    <tr>
+        <th>Time</th>
+        <th style="width: 90%">Log</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</body>
+</html>

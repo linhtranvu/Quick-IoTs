@@ -1,4 +1,4 @@
-:not(input):not(textarea),
+/* :not(input):not(textarea),
 :not(input):not(textarea)::after,
 :not(input):not(textarea)::before {
     -webkit-user-select: none;
@@ -7,18 +7,23 @@
 }
 input, button, textarea, :focus {
     outline: none; // You should add some other style for :focus to help UX/a11y
-}
+} */
 
 img {
-   width:85%;margin-bottom:10px;border-radius:8px;max-width:120px;border: 1px solid #ddd;
+   /* width:85%;margin-bottom:10px;border-radius:8px;max-width:120px;border: 1px solid #ddd; */
 }
+
+.myimg {
+    border-radius:8px;
+    border: 1px solid rgb(99, 99, 99);
+ }
 
 .toolbar{
     position: fixed;
     left: 0;
     top: 0;
 	width: 100%;
-	height: 30px;	
+	height: 22px;	
 	background-color: #393939;
 	z-index: 20;
 	padding: 2px 2px;
@@ -50,5 +55,15 @@ img {
 
 
 .code-container{
-    font-size:0.8em;padding:3px;height: 100px; overflow-y: scroll;
+    font-size:0.8em;
+    padding:3px !important;
+    height: 100px; overflow-y: scroll;
+}
+
+#frm_serial td{
+    padding:2px;
+}
+
+#div_log td{
+    padding:1px;
 }

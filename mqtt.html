@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>MQTT logger</title>
+    
+    <script src="./js/jquery.min.js"></script>
+   <script src="./js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="./js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.gritter.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
+  <script src="./js/ace-elements.min.js" type="text/javascript"></script>
+  <script src="./js/ace.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.blockUI.js" type="text/javascript"></script>
+  <script src="./js/common.js" type="text/javascript"></script>
+  
+  <script src="./js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.maskedinput.min.js" type="text/javascript"></script>
+  <script src="./js/underscore-min.js" type="text/javascript"></script>
+  <script src="./js/jquery.cookie.js" type="text/javascript"></script>
+
+  <script src="./js/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.validate.default.js" type="text/javascript"></script>
+  <script src="./js/jquery.validate.default.js" type="text/javascript"></script>
+  <script src="./js/sweetalert2.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.formautofill.js" type="text/javascript"></script>
+  <script src="./js/alasql.js" type="text/javascript"></script>
+  <script src="./js/sharelib.js" type="text/javascript"></script>
+  <script src="./js/axios.min.js" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="./css/device.css" type="text/css" media="screen,projection">
+	<link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/bootstrap-responsive.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/font-awesome.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/jquery-ui-1.10.3.custom.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/jquery.gritter.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/chosen.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/datepicker.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/ace.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/ace-responsive.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/ace-skins.min.css" type="text/css" media="screen,projection">
+  <link rel="stylesheet" href="./css/sweetalert2.min.css" type="text/css" media="screen,projection">  
+
+
+  <script>
+    
+$(document).ready(function () {
+
+  var client;
+  var connectStatus = 0;
+  var i = 0;
+  $(".btn-mqtt-stop").hide();  
+ 
+  $(".btn-mqtt-start").click(function () {  
+   
+    startMQTT();   
+  
+  })  
+
+  $(".btn-mqtt-stop").click(function () {  
+    client.end();
+    connectStatus = 0;
+    $(".btn-mqtt-start").show();
+    $(".btn-mqtt-stop").hide();    
+  })
+
+  $(".btn-mqtt-clear").click(function () {  
+    $("#tbl_mqtt tbody").html("");
+  })  
+
+  $(".btn-mqtt-help").click(function () {  
+    app.mqttHelp();
+  })  
+
+  
+
+  
+  function startMQTT(){
+    // $.blockUI();
+    client  = mqtt.connect({
+      host: $("#host").val(), port:  $("#port").val(), 
+      username: $("#username").val(), password:  $("#password").val() 
+      });
+
+
+    client.on('connect', function () {
+
+      if(i == 0){
+        $.unblockUI();
+        swal({type:"success",title:"Connect MQTT successfully. Log will begin soon"});
+        connectStatus = 1;
+        $(".btn-mqtt-start").hide();
+        $(".btn-mqtt-stop").show();
+      }
+
+     
+      client.subscribe('#', { qos: 1 });
+    })
+
+    client.on('message', function (topic, message) {
+        i++;
+
+      // message is Buffer
+      $("#tbl_mqtt tbody").append(`
+      <tr>
+          <td>${getTime()}</td>
+          <td>${topic}</td>
+          <td>${message}</td>
+        </tr>`)
+      //  console.log(message.toString())
+      //  client.reconnect()
+
+        if( $("#tbl_mqtt tbody tr").length>100){
+          numRowRemove = $("#tbl_mqtt tbody tr").length - 100;
+          for(j=0;j<numRowRemove;j++){
+            $("#tbl_mqtt tbody tr").eq(j).remove();
+          }
+          
+        }
+    })
+
+    
+    
+    
+    setTimeout(function(){
+      $.unblockUI();
+      if(connectStatus == 0){
+        swal({type:"error",title:"Connect MQTT failed. Check your server config"});
+      }
+      
+
+    }, 5000);   
+
+    
+
+
+    // client.on('close', function (topic, message) {
+    //   client.reconnect()
+    // })
+  
+  }//end MQTT start function
+  
+
+
+
+
+
+  $('.hasTooltip').tooltip({"html": true,"container": "body"});
+
+}); //End document ready
+
+
+</script>
+
+</head>
+<body>
+
+  
+  
+<div id="div_main">
+
+
+<div class="toolbar" style="color:aliceblue">
+
+  Host: <input id="host" type="text" style="width: 120px" value="localhost"/>
+  Port: <input id="port" type="text" style="width: 33px" value="1883"/> 
+  Username: <input id="username" type="text" style="width: 120px" value=""/> 
+  Password: <input id="password" type="text" style="width: 120px" value=""/> 
+
+	<div class="btn-group">
+
+	
+		<span class="btn btn-small btn-success btn-mqtt-start electron" ><i class=" icon-fighter-jet"></i> Start Log</span>
+    <span class="btn btn-small btn-warning btn-mqtt-stop electron" ><i class=" icon-ban-circle"></i> Stop Log</span>
+    <span class="btn btn-small btn-danger btn-mqtt-clear electron" ><i class="  icon-lemon"></i> Clear log</span>
+    
+
+    
+		<!-- <span class="btn btn-small btn-danger btn-build electron" ><i class="icon-cloud-upload"></i> Build&Upload</span> -->
+		<!-- <span class="btn btn-small btn-info btn-serial electron" ><i class="icon-bolt"></i> Serial Monitor</span> -->
+    <!-- <span class="btn btn-small btn-primary btn-mqtt electron" ><i class="icon-comments-alt"></i> MQTT server</span> -->
+
+  </div>
+  
+  <div style="float:right">
+      <span style="text-align: right" class="btn btn-small btn-info btn-mqtt-help electron" ><i class="icon-asterisk"></i> Help!</span>
+  </div>
+
+
+</div>  <!-- END TOOLBAR -->
+<br><br>
+<h3 class="header smaller lighter red">MQTT SERVER</h3>
+<div class="alert alert-block alert-info">For perfomance, only 100 last messsages display</div>
+<table style="width: 100%" class="table table-bordered table-condensed" id="tbl_mqtt">
+	<thead>
+    <tr>
+        <th>Time</th>
+        <th>Topic</th>
+        <th style="width: 65%">Info</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</body>
+</html>

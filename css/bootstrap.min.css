@@ -86,7 +86,7 @@ sub {
 img {
     width: auto\9;
     height: auto;
-    max-width: 100%;
+    /* max-width: 100%; */
     vertical-align: middle;
     border: 0;
     -ms-interpolation-mode: bicubic;
@@ -996,7 +996,7 @@ label {
 select,textarea,input[type="text"],input[type="password"],input[type="datetime"],input[type="datetime-local"],input[type="date"],input[type="month"],input[type="time"],input[type="week"],input[type="number"],input[type="email"],input[type="url"],input[type="search"],input[type="tel"],input[type="color"],.uneditable-input {
     display: inline-block;
     height: 20px;
-    padding: 4px 6px;
+    padding: 0px 0px;
     margin-bottom: 5px;
     font-size: 14px;
     line-height: 20px;
@@ -1048,7 +1048,7 @@ input[type="file"],input[type="image"],input[type="submit"],input[type="reset"],
 }
 
 select,input[type="file"] {
-    height: 30px;
+    height: 24px;
     *margin-top: 4px;
     line-height: 30px;
 }
@@ -3395,6 +3395,19 @@ button.btn.btn-mini,input[type="submit"].btn.btn-mini {
     line-height: 20px;
 }
 
+.warning {
+    color: #c09853;
+    background-color: #fcf8e3;
+    /* border-color: #dadada; */
+}
+
+.info {
+    color: #3a87ad;
+    background-color: #d9edf7;
+    /* border-color: #bce8f1; */
+}
+
+
 .alert-success {
     color: #468847;
     background-color: #dff0d8;
@@ -4555,7 +4568,7 @@ button.btn.btn-mini,input[type="submit"].btn.btn-mini {
     top: 10%;
     left: 50%;
     z-index: 1050;
-    width: 560px;
+    width: 650px;
     margin-left: -280px;
     background-color: #fff;
     border: 1px solid #999;
@@ -4574,7 +4587,7 @@ button.btn.btn-mini,input[type="submit"].btn.btn-mini {
 }
 
 .modal.fade {
-    top: -25%;
+    top: -100%;
     -webkit-transition: opacity .3s linear,top .3s ease-out;
     -moz-transition: opacity .3s linear,top .3s ease-out;
     -o-transition: opacity .3s linear,top .3s ease-out;
@@ -4601,7 +4614,7 @@ button.btn.btn-mini,input[type="submit"].btn.btn-mini {
 
 .modal-body {
     position: relative;
-    max-height: 400px;
+    max-height: 360px;
     padding: 15px;
     overflow-y: auto;
 }

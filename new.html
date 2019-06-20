@@ -2,31 +2,29 @@
 
 $(document).ready(function () {   
     
-    app.home();//Get device list json
+    // app.home();//Get device list json
+    $( ".tbl-devices tbody" ).html(_.template($("#tpl-datatable").html(),{rows:device}));  
     
 
     $( "body" ).undelegate( ".btn-choose-device","click").delegate( ".btn-choose-device", "click", function() {
-        let url = $(this).data("url"); //Load device.html
-        device_id = $(this).data("device-id");
-        device_code = $(this).data("device-code");
 
-        $("#api_url").val(api_host+""+$(this).data("api-url")); //Add api url to input for later used!
-        // console.log(api_url);
+       query = `select * from ? where id = "${$(this).data("device-id")}" ` ;   
+        currentDevice =  alasql(query,[device])[0];
 
         (async function () {  
 
             $.blockUI();   
-            var response = await axios.get(url);
+            var response = await axios.get("./device.html");
             $( "#div_main" ).html(response.data);
-			if (userAgent.indexOf(' electron/') > -1) { //Electron code only
-				app.saveProjectEditorJson(device_id,device_code);            
-				setTimeout(function(){
-					app.loadAllFile(fileLocation); 
-					$.unblockUI();
-				}, 3000);               
-			}else{
-				$.unblockUI();
-			}
+            if (userAgent.indexOf(' electron/') > -1) { //Electron code only
+              app.saveProjectEditorJson(currentDevice.id,currentDevice.code);            
+              setTimeout(function(){
+                app.loadAllFile(fileLocation); 
+                $.unblockUI();
+              }, 3000);               
+            }else{
+              $.unblockUI();
+            }
           
         })()
 
@@ -42,9 +40,30 @@ $(document).ready(function () {
             //         $.unblockUI();
             // }, 3000);            
         
-        // });    
-    })
+        // });  
+        
+        
+    })//end choose device btn
 
+    $(".btn-dont-know").click(function (e) { 
+      e.preventDefault();
+      swal({
+        type:"success",
+        title:"Device explain",
+        html:`<div style="text-align: left;font-size: 14px">
+    <b class="red">NodeMCU ESP8286</b> is the most recommend device if you don't know what to start. Reason:
+    <ul>
+        <li> <b class="red">NodeMCU ESP8286</b> is cheapest and support WIFI, a true IOT device.</li> 
+        <li> <b class="red">NodeMCU ESP32</b> has higher price, has bluetooth (usually not used), not compatiple with all modules.</li>
+        <li> <b class="red">Arduino</b> is not recommend. You must buy an external device (like a LAN card) and using caple to connect device to internet.</li>
+    </ul>
+    <b class="red">Price and where to buy</b> is in description. China store is cheapest but it takes long to ship. You could try to find in any online market in your country.
+
+    
+</div>`
+      })
+      
+  });
 
     $('.hasTooltip').tooltip({"html": true,"container": "body"});
 
@@ -61,15 +80,19 @@ $(document).ready(function () {
   
 <h3 class="header smaller red">CHOOSE YOUR DEVICE TO CONTINUE...</h3>
 
+<div class="alert alert-block alert-warning">I don't know any device below. Don't worry, 
+  <span  class="btn btn-mini btn-primary btn-dont-know">Click here</span> to know more.
+  </div>
 
 <table style="width: 100%" class="table table-bordered table-striped tbl-devices">
     <thead>
     <tr>
     <th style="width:5px">#</th>
     <th style="width:10%">Device name</th>
-    <th style="width:10%">Device code</th>
     <th ">Image</th>
     <th>Description</th>
+    <th>Price ($)</th>
+    <th>Buy</th>
     </tr>
     </thead>
     
@@ -99,9 +122,12 @@ $(document).ready(function () {
       <td>
         <b><a href="#id" data-device-id="<%= row.id %>" data-device-code="<%= row.code %>"  class="btn-choose-device" data-api-url = "/iots/index.php?option=com_omg&view=omg&task=device&format=raw&id=<%= row.id %>" data-url="./device.html"><%= row.name %></a></b>
       </td>
-      <td><%= row.code %></td>
-      <td><img style="width:85%;margin-bottom:10px;border-radius:8px;max-width:50px;border: 1px solid #ddd;" src="./img/<%=row.image %>" ></td>
+      <td><img style="width:85%;margin-bottom:10px;border-radius:8px;max-width:100px;border: 1px solid #ddd;" src="./img/<%=row.image %>" ></td>
       <td><%= row.description %></td>
+      <td><%= row.price %></td>
+      <td><a href="<%= row.buy_url %>" target="_blank">
+          <img style="width:60%" src="./img/aliexpress.png" >
+      </a></td>
   </tr> 
  
   <% })  

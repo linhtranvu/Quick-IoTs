@@ -1,0 +1,12 @@
+"D:\Program Files (x86)\Arduino\arduino_debug" --board esp8266:esp8266:nodemcuv2 --port COM5  --upload "D:\IOTs\Project\OpenMQTTGateway\OpenMQTTGateway.ino"
+
+"D:\Program Files (x86)\Arduino\arduino_debug"  --port COM5  --upload "D:\IOTs\Project\OpenMQTTGateway\OpenMQTTGateway.ino"
+
+"D:\Program Files (x86)\Arduino\arduino_debug"  --port COM5 --preferences-file "D:\xampp7\htdocs\open-mqtt-editor\arduino\pref\preferences_esp8266.txt" --upload "D:\IOTs\Project\OpenMQTTGateway\OpenMQTTGateway.ino"
+
+
+
+"D:\Program Files (x86)\Arduino\arduino_debug"  --preferences-file "D:\xampp7\htdocs\open-mqtt-editor\arduino\pref\preferences_esp8266.txt" --port COM5 --pref sketchbook.path="D:\IOTs\Project\OpenMQTTGateway" --upload "D:\IOTs\Project\OpenMQTTGateway\OpenMQTTGateway.ino"
+
+
+"D:\Program Files (x86)\Arduino\arduino_debug"  --board esp8266:esp8266:nodemcuv2 --port COM5 --pref sketchbook.path="D:\IOTs\Project\OpenMQTTGateway" --upload "D:\IOTs\Project\OpenMQTTGateway\OpenMQTTGateway.ino"

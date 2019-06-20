@@ -1,7 +1,3 @@
-var device = "";
-var cats = "";
-var fields = "";
-
 $(document).ready(function () {
 		
 	if (userAgent.indexOf(' electron/') > -1) {	
@@ -13,20 +9,13 @@ $(document).ready(function () {
 	$(".div_container_device").css("height", $(window).height()-70);	
 	
    //Get all data from server (JSON) and processing data
-	$.get($('#api_url').val(), function (data, textStatus, jqXHR) {
-		device = data["device"];
-		cats = data["cat"];
-		modules = data["modules"];
-		fields = data["field"];   
-		device_pin = data["device_pin"];  
+
 		
-		
-	$(".btn-device").html("<i>Device: "+data["device"].name+"</i>");				
+	$(".btn-device").html("<i>Device: "+currentDevice.name+"</i>");				
 	app.drawFields("device",$("#tbl_omg_config"),"");  //Draw main layout		
-	app.drawModule(data); //Draw module field;
+	app.drawModule(apiData); //Draw module field;
 
 
-	}); //end get data
 
       
 	$("#div_device_wifi_setup, #mqtt_server_name").hide();
@@ -92,9 +81,25 @@ $(document).ready(function () {
 	
 	$( "body" ).undelegate( ".module_chooser","change").delegate( ".module_chooser", "change", function() {
 
+		currentModuleChooser = $(this);
+		if(currentModuleChooser.attr("exclude-module") !== ""){
+			excludeModule = currentModuleChooser.attr("exclude-module").split(",");
+			// console.log(excludeModule);
+
+			for(j=0;j<excludeModule.length;j++){
+
+				if($(".module_chooser:checked[data-module-code='"+excludeModule[j]+"']").length > 0){
+					swal("",`You need to turn off ${$(".module_chooser:checked[data-module-code='"+excludeModule[j]+"']").attr("data-module-code")} before using this module`);
+					currentModuleChooser.prop("checked", false);
+					return;
+				}						
+	
+			}				
+		}
+
 		let div_module_chooser = $(this).closest("tr").find(".div_module_chooser");
 
-		if($(this).prop("checked")){
+		if(currentModuleChooser.prop("checked")){
 
 			div_module_chooser.show();
 			div_module_chooser.find(":input").attr("module-connect",1);
@@ -105,6 +110,47 @@ $(document).ready(function () {
 		}
 
 	}); //end module chooser
+
+
+	$(".btn-device").click(function(){
+		swal({
+			showComfirmButton: false,
+			html:`<div style="font-size: 14px">
+    <table class="table table-bordered table-condensed table-striped table-hover">
+        <tr>
+            <td>Name</td>
+            <td>${currentDevice.name}</td>
+        </tr>
+        <tr>
+            <td>Image</td>
+            <td><img style="width:85%;margin-bottom:10px;border-radius:8px;max-width:100px;border: 1px solid #ddd;" src="./img/${currentDevice.image}" ></td>
+        </tr>
+        <tr>
+            <td>Desciption</td>
+            <td>
+                ${currentDevice.description}
+
+            </td>
+        </tr>     
+        <tr>
+            <td>Price</td>
+                <td>
+                    ${currentDevice.price}
+    
+                </td>
+            </tr>        
+            <td>Buy</td>
+                <td>
+                <a href="${currentDevice.buy_url}" target="_blank">
+                        <img style="width:60%" src="./img/aliexpress.png" >
+                    </a>
+    
+                </td>
+            </tr>                        
+    </table>
+</div>`
+		})
+	})
 
 	$(".btn-home").click(function(){
 
@@ -135,8 +181,14 @@ $(document).ready(function () {
 	$(".btn-change-device	").click(function(){
 			swal({
 					title: 'Change device?',
-					html: `
-You will go to change device layout. You have to resetup PIN to fit your device. All working <b>will be loss</b> if not saved!
+					html: `<div style="text-align: left">
+    <ul>
+        <li>Save before continue or all changes will be lost!</li>
+        <li>You have to re-setup PIN to fit your device.
+        </li>        
+    </ul>
+</div>
+
 	`,
 					type: 'warning',
 					showCancelButton: true,
@@ -155,47 +207,16 @@ You will go to change device layout. You have to resetup PIN to fit your device.
 							
 	});
 	
+	$(".btn-generate-config").click(function(){
 
+		app.save(0);
 
-
-	//Generate code button
+	});
 	
-	$(".btn-generate-config, .btn-save-overwrite").click(function(){
-		let ret = $("#frm_omg").find(":input").not(':input[module-connect="0"]').valid();
-		
-		currentButton = $(this);
+	$(".btn-save-overwrite").click(function(){
 
-		if(ret == true){
+		app.save(1);
 
-
-			if(currentButton.hasClass("btn-save-overwrite")){
-
-				swal({
-					title: 'Are you sure to save?',
-					html: `<ul>
-						<li>All config files wil be overwrite by setting from this Editor</li>
-						<li>Files are saved to "${fileLocation}"</li>
-					</ul>`,
-					type: 'warning',
-					showCancelButton: true,
-					confirmButtonColor: '#3085d6',
-					cancelButtonColor: '#d33',
-					confirmButtonText: 'Save and overwrite'
-					}).then((result) => {
-					if (result.value) {
-
-						app.readInputToGenCode(currentButton);
-										
-					}
-				});	
-			}else{
-				app.readInputToGenCode(currentButton);
-			}				
-
-
-		}else{
-			swal("Please check required field!");
-		}
 	});
 
 
@@ -218,7 +239,83 @@ You will go to change device layout. You have to resetup PIN to fit your device.
 		// alert("Copied the text: " + copy_wrapper.val());
 	});
 
+	$(".btn-serial").click(function (e) { 
+		// $("#div_modal_serial").modal('toggle');
+			app.openSerial();
 
+	});
+
+
+	$(".btn-quick-build").click(function (e) { 
+
+		if(serialWindow !== null){
+			serialWindow.close();
+		}
+		
+
+		if(fs.existsSync("./build_in_process")){ //Rom is being built, folder build exists
+			$("#div_modal_build").modal({backdrop: 'static', keyboard: false});		
+		}else{
+
+			if( app.checkMainForm() == true){
+
+				app.save(1); //save(1) mean save to file
+				setTimeout(function(){
+					$("#div_modal_build").modal({backdrop: 'static', keyboard: false});		
+
+					(async function(){
+
+						portList = await app.checkPort();
+						// port.length = 3;
+						if(portList.length > 0){
+							await buildApp.buildUpload();
+							$("#port_name").html(portList[0].comName+" | "+portList[0].manufacturer)
+						}else{
+							swal({type:"error",title:"No device found!"})
+						}			
+					})()
+
+				},2000);			
+	
+			}			
+
+		}
+
+	});	
+
+
+
+	$(".btn-reset-build").click(function (e) { 
+		Swal.fire({
+			title: 'Are you sure to reset?',
+			text: "Don't reset if build is running! You will mess the whole build flow",
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, reset!'
+		}).then((result) => {
+			if (result.value) {
+				fs.rmdirSync("./build_in_process")
+			}
+		})		
+		
+
+	});		
+
+	
+
+	$(" .btn-browser-notwork").click(function(){
+		swal({type:"error",text:"This feature only work with desktop version. Please download to use"});
+	})
+
+
+	$(" .btn-mqtt").click(function(){
+		app.openMQTT();
+		// window.open('./mqtt.html', 'electron', 'frame=false,menubar=no ')
+	});
+	
+	
 
 	$('.hasTooltip').tooltip({"html": true,"container": "body"});
 

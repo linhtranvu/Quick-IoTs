@@ -19,23 +19,40 @@ function createWindow () {
   })
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
-  mainWindow.maximize()
+//  console.log(process.argv);
 
-  globalShortcut.register('f5', function() {
-    mainWindow.reload();
-  })  
+  mainWindow.loadFile('index.html')
+  mainWindow.maximize();
+
+  // globalShortcut.register('f5', function() {
+  //   mainWindow.reload();
+  // })  
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
+  mainWindow.on('close', function (e) {
+
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null
+    var choice = dialog.showMessageBox(
+      {
+        type: 'question',
+        buttons: ['Yes', 'No'],
+        title: 'Confirm',
+        message: 'Are you sure you want to quit? All working will be lost if not saved.'
+     });
+     if(choice == 1){
+       e.preventDefault();
+     }else{
+      mainWindow = null;
+     }
+    
   })
+
+
 
   //Code for menu
   var menu = Menu.buildFromTemplate([
@@ -43,7 +60,18 @@ function createWindow () {
       
         label: 'Menu',
         submenu: [
-           
+          {label:'New',
+            click() { 
+              // mainWindow.reload();
+              mainWindow.webContents.send('newProject');
+            }          
+          },           
+          {label:'Open',
+            click() { 
+              // mainWindow.reload();
+              mainWindow.webContents.send('openProject');
+            }          
+          },            
           {label:'Home',
             click() { 
               // mainWindow.reload();
@@ -52,9 +80,11 @@ function createWindow () {
           },   
           {label:'Preference',
             click() { 
-              mainWindow.loadFile('preference.html')
+              // mainWindow.loadFile('preference.html')
+              mainWindow.webContents.send('openPreferenceIPC');
+              // app.openPreference();
             }          
-          },                  
+          },                          
           {label:'Open MQTT Gateway github',
             click() { 
               shell.openExternal('https://github.com/1technophile/OpenMQTTGateway')
@@ -69,13 +99,30 @@ function createWindow () {
         ]
     },
     {
-      label: 'Dev Tool',
-      submenu: [
+      label: 'Tool',  
+          submenu: [
+            {label:'Serial monitor (Devide Logging)',
+            click() { 
+              mainWindow.webContents.send('openSerial');
+            }          
+          },   
+            {label:'MQTT Logging',
+            click() { 
+              mainWindow.webContents.send('openMQTT');
+            }          
+          },        
+          {type:'separator'},  // Add this
           {label:'Debug mode',
           click() { 
             mainWindow.webContents.openDevTools();
+            }          
+          },
+          {label:'Reload',
+            click() { 
+              mainWindow.reload();
+            },
+            accelerator: 'f5',          
           }          
-          }
       ]
     },
     {
@@ -121,8 +168,10 @@ app.on('activate', function () {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
     createWindow()
+   
   }
 })
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+

@@ -1005,7 +1005,7 @@
     }
 
     .modal.fade {
-        top: -100px;
+        top: 100%;
     }
 
     .modal.fade.in {

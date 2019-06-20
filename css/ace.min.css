@@ -3746,7 +3746,7 @@ th .lbl:only-child, td .lbl:only-child { vertical-align: top }
 }
 .widget-header {
     position: relative;
-    min-height: 38px;
+    /* min-height: 38px; */
     background: #f7f7f7;
     background-color: #f8f8f8;
     background-image: -moz-linear-gradient(top,#fff,#eee);
@@ -3777,7 +3777,7 @@ th .lbl:only-child, td .lbl:only-child { vertical-align: top }
     padding-left: 10px;
 }
 .widget-header>.widget-caption, .widget-header>:first-child {
-    line-height: 36px;
+    line-height: 25px;
     padding: 0;
     margin: 0;
     float: left;
