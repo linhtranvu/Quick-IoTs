@@ -133,7 +133,7 @@ var newApp = {
 		})
 		downloadGitRepo_p = util.promisify(downloadGitRepo);
 
-		await downloadGitRepo_p(`linhtranvu/quick-iots/#${server_config.editor_version}`, downloadPath);
+		await downloadGitRepo_p(`linhtranvu/Quick-IoTs/#${server_config.editor_version}`, downloadPath);
 
 		if (fs.existsSync(`${downloadPath}/version/version_${server_config.editor_version}`)) {
 
