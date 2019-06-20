@@ -291,7 +291,8 @@ var app = {
             pref.appPath = electronApp.getAppPath();  
 
             if (fs.existsSync("./resources")) { //Running in build mode
-              pref.appSrc = pref.appPath+"/resources/app";  
+            //   pref.appSrc = pref.appPath+"/resources/app";  
+              pref.appSrc = pref.appPath;
             }else{
               pref.appSrc = pref.appPath;
             }

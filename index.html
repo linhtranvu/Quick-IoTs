@@ -134,74 +134,63 @@
 
         <div class="widget-box pricing-box">
             <div  class="widget-header header-color-green">
-              <h5 class="bigger lighter">Open MQTT Gateway Overview</h5>
+              <h5 class="bigger lighter">Internet of Things 's
+                  never been easier</h5>
             </div>
 
             <div class="widget-body">
-              <div class="widget-main">
-                
-                        
-            <p>OpenMQTTGateway act as a WIFI or Ethernet gateway between your 433mhz/315mhz/Infrared/BLE/GSM/GPRS devices and a MQTT broker.</p>
-            
-            <p>The MQTT broker can be connected to your favorite home automation controller (Home Assistant, Openhab, Domoticz) or NodeRED, as long as it supports MQTT, the system can talk to the gateway and by the way your different devices on both directions.</p>
-            
-            <p><a target="_blank" class="" href="https://github.com/1technophile/OpenMQTTGateway/wiki">
-              <img style="border-radius:8px;border: 1px solid #ddd;" src="./img/OpenMQTTGateway.jpg" alt=""></a></p>
-            
-            <p>It can be installed on:</p>
-            <ul>
-              <li>Arduino uno(limited)/mega(advised) + W5100</li>
-              <li>ESP8266: NodeMCU V1.0 NodeMCU V2.0, NodeMCU V3.0, ESP8266 12F and Wemos D1</li>
-              <li>ESP32</li>
-              <li>
-                <p>Sonoff RF bridge.</p>
-            
-                <p>It enables to:</p>
-              </li>
-              <li>Send RF signals corresponding to received MQTT data (MQTT-&gt;RF)</li>
-              <li>Publish MQTT data related to a received 433Mhz signal (RF–&gt;MQTT)</li>
-              <li>Send RFM69 signals corresponding to received MQTT data (MQTT-&gt;RFM69)</li>
-              <li>Publish MQTT data related to a received RFM69 signal (RFM69–&gt;MQTT)</li>
-              <li>Send IR signal corresponding to received MQTT data (MQTT-&gt;IR)</li>
-              <li>Publish MQTT data related to received IR signal (IR–&gt;MQTT)</li>
-              <li>Publish MQTT data related to BLE beacons or Mi flora(BT–&gt;MQTT)</li>
-              <li>Publish MQTT data related to received SMS (2G–&gt;MQTT)</li>
-              <li>Send SMS corresponding to received MQTT data (MQTT-&gt;2G)</li>
-            </ul>
-            
-            <p>It supports also sensors; DHT, HC SR501, ADC, I2C bus, INA226, TSL2561
-            Or can actutate a relay.</p>
-            
-            <h2 id="functions">Functions:</h2>
-            <ul>
-              <li>Bidirectional, the gateway can send and receive signals, for example if you have RF wall plug you can either control them with your home automation software (MQTT–&gt;RF) or the physical remote control. When you press a button on the physical remote the wall plug will switch ON and the button in your home automation software (RF–&gt;MQTT) will be updated.</li>
-              <li>Signal duplicate removal, with RF of IR we get a lot of duplication, to avoid this the gateway is able to filter the number of code sent to the MQTT broker during a defined time <code class="highlighter-rouge">time_avoid_duplicate</code>.</li>
-              <li>BLE beacons detection, the gateway publish the beacons detected thanks to an HM-10 module and publish the signal strength of each module address. By this way you can easily address presence detection of people, animals or things.</li>
-              <li>Addons possibility, you could add directly to the gateway any sensor you want, just create a new <code class="highlighter-rouge">Z&lt;addon&gt; .ino</code> file into the gateway folder with your code and call it after <code class="highlighter-rouge">client.loop();</code> into <code class="highlighter-rouge">OpenMQTTGateway.ino</code>. The program is provided with a DHT sensor addon implementation (<code class="highlighter-rouge">ZaddonDHT.ino</code>)</li>
-              <li>Advanced signal details publication, so as to know the details of what the gateway receive it publish by MQTT to <code class="highlighter-rouge">subject433toMQTTAdvanced</code> for RF and <code class="highlighter-rouge">subjectIRtoMQTTAdvanced </code>for IR the details of the signal received (this signal has to be compatible with RCSwitch and IRRemote libraries to be read).</li>
-              <li>Acknowledgement, to be sure that the gateway received the payload from MQTT it sends an acknowledgement on a <code class="highlighter-rouge">user_defined</code> topic, <code class="highlighter-rouge">subjectGTWRFtoMQTT</code> for RF or <code class="highlighter-rouge">subjectGTWIRtoMQTT</code> for IR enabling to update the state of your switch or other component into your home automation.</li>
-              <li>Multi boards compatibility, the gateway has been currently tested with <strong>ESP8266 12F</strong>, <strong>NodeMCU V1</strong>, <strong>NodeMCU V2</strong>, <strong>Wemos D1 mini</strong>, <strong>Arduino Uno</strong>, <strong>ESP32</strong> (RF and BLE gateways) and the <strong>Arduino Mega</strong>.</li>
-              <li>Multi protocols handling, the gateway is based on RCSwitch, NewRemoteSwitch, RFM69, A6lib and IRRemote libraries, you can define the protocol you want to use.</li>
-              <li>Configuration by web portal with <strong>ESP8266</strong> based boards</li>
-            </ul>
-            
-            <p>See the <a href="https://github.com/1technophile/OpenMQTTGateway/wiki">wiki</a> for more information:<br>
-            https://github.com/1technophile/OpenMQTTGateway/wiki</p>
-            
-            <p>Download OpenMQTTGateway from the <a href="https://github.com/1technophile/OpenMQTTGateway/releases">releases page</a></p>
-            
-            <p>The reference sheet, with the list of all functions, pinouts is <a href="https://docs.google.com/spreadsheets/d/1_5fQjAixzRtepkykmL-3uN3G5bLfQ0zMajM9OBZ1bx0/edit#gid=0">here</a></p>
-            
-            <p>A list of supported 433mhz devices (and others) is available <a href="https://docs.google.com/spreadsheets/d/1_5fQjAixzRtepkykmL-3uN3G5bLfQ0zMajM9OBZ1bx0/edit#gid=2126158079">here</a>, door/window sensors, PIR sensors, smoke detectors, weather stations…</p>
-            
-            <p>A list of compatible components to build your gateway is available <a href="https://docs.google.com/spreadsheets/d/1_5fQjAixzRtepkykmL-3uN3G5bLfQ0zMajM9OBZ1bx0/edit#gid=1323184277">here</a>, nodemcu, esp32, emitters and receivers…</p>
-            
+                <div class="widget-main">
 
+                    <table style="width: 100%">
+                        <tr>
+                          <td>
+                          <img alt="" src="./img/quickiotmodel.png" style="width: 600px; height: 612px" class="myimg">&nbsp;</td>
 
-            </div>
+                        </tr>
+                      </table>
+
+                      <br><br>
+                          <p><strong>SENSOR DATA FLOW&nbsp;</strong></p>
+                          <ul>
+                            <li>Device get data from <span class="label label-important arrowed-in">sensors</span>, send to <span class="label label-important arrowed-in">MQTT server</span></li>
+                            <li><span class="label label-important arrowed-in">App server</span> get data from <span class="label label-important arrowed-in">MQTT server</span></li>
+                            <li>User use <span class="label label-important arrowed-in">web browser, mobile</span> to view data sent from sensors</li>
+                          </ul>
+                          <p>&nbsp;</p>
+                          <p><strong>GATEWAY DATA FLOW (IR, RF...)</strong>&nbsp;</p>
+                          <ul>
+                            <li><span class="label label-important arrowed-in">Users</span> use &nbsp;web browser, mobile to send IR,RF.. code</li>
+                            <li><span class="label label-important arrowed-in">App server</span> send these code to <span class="label label-important arrowed-in">MQTT server</span></li>
+                            <li><span class="label label-important arrowed-in">Device</span> get data from <span class="label label-important arrowed-in">MQTT server</span>, convert to IR code, RF code...
+                            </li>
+                            <li>IR code, RF code... send to other devices like <span class="label label-important arrowed-in">TV, fans, light 
+                            bulb</span> to control. Eg, turn on/off</li>
+                          </ul>
+                          <p>&nbsp;</p>
+                          <p><strong>MQTT SERVER</strong>&nbsp;</p>
+                          <ul>
+                            <li>MQTT like a big chatroom, devices send and receive message in a 
+                            sub chatroom</li>
+                            <li>The best MQTT server is <span class="label label-important arrowed-in">
+                        Mosquitto</span> , <a target="_blank" href="https://mosquitto.org/download/">
+                        download and install here</a>. </li>
+                            <li>Default user and Password of Mosquitto is 
+                        blank</li>
+                          </ul>
+                          <p>&nbsp;</p>
+                          <p><strong>APP SERVER</strong>&nbsp;</p>
+                          <ul>
+                            <li>Supply user interface to web browser, mobile</li>
+                            <li>Base on <a class="label label-important arrowed-in" href="https://nodered.org/" target="_blank">Node-RED</a>, we have Prebuilt Project to make a beautiful 
+                            App for User in TWO click</li>
+                          </ul>
+                          
+                          &nbsp;
+
+                </div> <!-- end div widget main -->
+
               <div>
                 <a href="#" class="btn btn-block btn-success">
-                  <span>Open MQTT Gateway</span>
                 </a>
               </div>
             </div>
