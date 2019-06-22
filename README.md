@@ -30,5 +30,3 @@ If you just want to use app, visit http://www.quickiots.com.
 
 ## API server
 - This tool get JSON data of devices, fields... from a `PHP MYSQL API server`.
-
-- 
