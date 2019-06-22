@@ -6,7 +6,7 @@ This app starts as an editor for [Open MQTT Gateway](<https://github.com/1techno
 
 If you just want to use app, visit http://www.quickiots.com.
 
-![](D:\xampp7\htdocs\open-mqtt-editor\img\quickiotmodel.png)
+![](./img/quickiotmodel.png)
 
 ## Source code setup guide
 
