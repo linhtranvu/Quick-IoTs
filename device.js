@@ -39,18 +39,63 @@ $(document).ready(function () {
 			$(this).closest("td").find(".field").hide().attr("data-hide-code","1");
 		}		
 	})
+
+
+
 	
 	//Choose network type
 	$("#ESPWifiManualSetup").change(function(){
 		if($(this).val() == "false"){
 			$("#div_device_wifi_setup").show();
 			$("#div_manual_network_setup").hide();
+			$("#ESPWifiManualSetup").attr("data-hide-code",1); //#define ESPWifiManualSetup   false  CANNOT BE WRITE or error 
+			$(".div_network_info").html(`<ul>
+			
+			<li> <span class="label label-success arrowed-in arrowed-in-right">Recommend!</span> This setting allows you to setup Network connection for Device after build and upload. 
+			<li> Device will create a Wifi with the name of 'Device Wifi name' and password of 'Device Wifi password' </li>
+			<li> Connect to Wifi of device, open browser and enter 192.168.4.1</li>			
+			<li>Enter Wifi setting and MQTT setting. <a href="./img/wifi_setup.png" target="_blank">Example here</im></li>
+			</ul>`)
 		}
-		if($(this).val() == "true"){
+		if($(this).val() == "true"){ 
 			$("#div_device_wifi_setup").hide();
-			$("#div_manual_network_setup").show();				
+			$("#div_manual_network_setup").show();	
+			$("#ESPWifiManualSetup").attr("data-hide-code",0); //#define ESPWifiManualSetup   false  CANNOT BE WRITE or error 
+			
+
+
+			$(".div_network_info").html(`<ul>
+			
+			<li> You must enter value of Network connection for Device below. So you can't bring device out after build.
+			<li> Enter name and password of Wifi that device connects to</li>
+			<li> Enter IP, username & password of MQTT server that device connects to. If you install a fresh Mosquitto MQTT server, username and password are blank</li>			
+			</ul>`)
+								
 		}			
 	})
+
+	if(currentDevice.code == "esp8266"){
+		
+		$("#ESPWifiManualSetup").val("false").change();
+	}else if(currentDevice.code == "esp32"){
+		$("#ESPWifiManualSetup").val("true").change();
+		$("#ESPWifiManualSetup").hide();
+	}else{
+		$("#ESPWifiManualSetup").val("true").change();
+		$("#ESPWifiManualSetup").hide();
+		$("#div_manual_network_setup").show();
+		$("#div_device_wifi_setup").hide();
+
+		$(".div_network_info").html(`<ul>
+			
+		<li> Arduino will be automatically assigned IP by LAN's DHCP server. </li>
+		<li>If no DHCP found, device will be assigned IP setting in "Advance network"</li>
+		<li> Enter IP, username & password of MQTT server that device connects to. If you install a fresh Mosquitto MQTT server, username and password are blank</li>			
+		</ul>`)		
+
+	}	
+
+
 
 	//Choose mqtt server
 	$("#use_mqtt_host").change(function(){

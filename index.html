@@ -94,11 +94,6 @@
 
 
 
-
-
-  
-
-
   $('.hasTooltip').tooltip({"html": true,"container": "body"});
 
 }); //End document ready
@@ -119,14 +114,14 @@
     <div class="span4" >
 
         <a style="margin-left: 50px" href="#" class="btn btn-app btn-primary btn-new-web browser">
-            <i class="icon-file"></i>New
+            <i class="icon-file"></i>New 
         </a>    
 
         <a style="margin-left: 50px" href="#" class="btn btn-app btn-primary btn-new electron">
-            <i class="icon-file"></i>New
+            <i class="icon-file"></i>New 
         </a>    
         <a href="#" class="btn btn-app btn-warning btn-open electron">
-            <i class="icon-folder-open "></i>Open
+            <i class="icon-folder-open "></i>Open 
         </a>
 
     </div>
@@ -230,7 +225,8 @@
       <div class="alert alert-info"><ul>     
           <li> Project saved before build! Serial monitor forces to close.</li>
           <li> To cancel build, click on terminal and press Ctrl+C</li>
-          <li class="red"> In case Build button does not work. Press "Reset Build Environment" and try again. If upload fails, re-plug your iot device</li>
+          <li class="red"> Build button does not work: Press "Reset Build Environment" and try again</li>
+          <li class="red"> Upload fails: re-plug device and close any app using PORT (eg Arduino IDE with Serial monitor open)</li>          
       </ul></div>
       <form id="frm_build_upload">
           <table style="width: 100%" class="table table-bordered table-striped tbl-devices">

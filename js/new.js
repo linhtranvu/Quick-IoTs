@@ -32,7 +32,7 @@ var newApp = {
 									<li>We use <a href="https://github.com/1technophile/OpenMQTTGateway" target="_blank">Open MQTT Gateway</a>, 
 									an <a href="https://www.circuito.io/blog/arduino-code/" target="_blank">Arduino</a> project as source to build and upload to device. Build and Upload code to device need <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino IDE</a> installed</li> 
 									<li>
-											Source code will be placed in selected folder.
+										To begin, press <b class="label label-info arrowed-in-right arrowed">Select folder</b> to save your project files in
 									</li>                                                                                                                        				
 							</ul>
 					</div>`
@@ -40,8 +40,8 @@ var newApp = {
 				if (result.value) {
 					
 					fileLocation = app.openFolder();
-					console.log(fileLocation);
-					fs.copySync(`${pref.appSrc}/arduino/code/${pref.omg_version}`, fileLocation);
+					console.log(`${pref.appSrc}/arduino/code/${pref.omg_version}`);
+					fs.copySync(`${pref.appSrc}/arduino/code/${pref.omg_version}/src`, fileLocation);
 					app.openProject(fileLocation);
 				}
 
@@ -117,9 +117,16 @@ var newApp = {
 			if (fs.existsSync(downloadPath)) {
 
 				swal({type:"success",title:"Source code update successfully! Create New Project again!"});
+
+				if (fs.existsSync(downloadPath+"/lib")) {
+					fs.renameSync(downloadPath+"/lib", downloadPath+"/libraries")
+				}
+
 				pref.omg_version = server_config.omg_version;
 				fs.writeFileSync('./preference.ini', ini.stringify(pref));
 
+			}else{
+				swal({type:"error",title:"Update fail! Please update again!"});
 			}
 
 

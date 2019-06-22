@@ -49,10 +49,11 @@ var buildApp = {
 
       if(currentDevice.board_path !== ""){ //ESP8266, ESP32
         buildCondition = await buildApp.checkBoardCode();
+        
       }
       
       if(buildCondition == 0){
-        swal({type:"error",title:"Something wrong happened!"})
+        // swal({type:"error",title:"Something wrong happened!"})
         return false;
       }else{
         // swal({type:"success",title:"Arduino IDE, Device lib found. Ready to build & upload!"})
@@ -132,7 +133,7 @@ var buildApp = {
         html:`
         <div style="text-align: left"><ul>
           <li>Automatic install: <a href="#c" onclick="buildApp.boardInstall()"><b>Click here</b></a>.</li>
-          <li> Manual install: Follow <a href="${currentDevice.lib_install_guide}">this guide</a>.</li>
+          <li> Manual install: Follow <a href="${currentDevice.lib_install_guide}" target="_blank"><b>this guide</b></a>. <b style='color:red'>Must install board version ${currentDevice.board_version}<b></li>
           </ul>
         <div>
         `
@@ -148,9 +149,14 @@ var buildApp = {
       showConfirmButton: false,      
       html:`Downloading to "${boardPath}". Please wait until next message...`
     })
-    fs.emptyDirSync(boardPath)
+
+    packagePath = `${arduinoSettingPath[0]}${currentOs.username}${arduinoSettingPath[1]}/packages`;
+    fs.emptyDirSync(`${packagePath}/${currentDevice.code}`)
+
     downloadGitRepo_p = util.promisify(downloadGitRepo);
-    await downloadGitRepo_p(currentDevice.board_download_url, `${boardPath}/${currentDevice.board_version}`);
+    await downloadGitRepo_p(currentDevice.board_download_url, packagePath);
+    fs.createReadStream(`${packagePath}/${currentDevice.code}.zip`).pipe(unzip.Extract({ path: `${packagePath}` }));
+
     boardExist = await buildApp.checkBoardCode();
     if(boardExist == 1){
       swal({type:"success",title:"Download device library successfully! Press 'Build & Upload' again."})

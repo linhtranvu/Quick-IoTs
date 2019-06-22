@@ -1,8 +1,8 @@
 {
   "name": "open-mqtt-gateway-editor",
-  "productName": "open-mqtt-gateway-editor",
+  "productName": "Quick IOTs",
   "version": "1.0.0",
-  "description": "Editor for Open MQTT Gateway project",
+  "description": "Build IOT device in seconds! IOT has never been easier",
   "main": "./main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -14,33 +14,7 @@
   "keywords": [],
   "author": "Linh",
   "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "my_app"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
-  },
+  "config": {},
   "dependencies": {
     "download-git-repo": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
@@ -50,8 +24,9 @@
     "lodash.debounce": "^4.0.8",
     "mqtt": "^3.0.0",
     "node-cmd": "^3.0.0",
-    "serialport": "^7.1.5",
     "node-pty": "^0.8.0",
+    "serialport": "^7.1.5",
+    "unzip": "^0.1.11",
     "xterm": "^3.14.2",
     "xterm-addon-ligatures": "0.1.0-beta-1"
   },

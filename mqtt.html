@@ -109,6 +109,9 @@ $(document).ready(function () {
         </tr>`)
       //  console.log(message.toString())
       //  client.reconnect()
+        if($("#autoscroll"). prop("checked") == true){
+                window.scrollTo(0,document.body.scrollHeight);
+        }  
 
         if( $("#tbl_mqtt tbody tr").length>100){
           numRowRemove = $("#tbl_mqtt tbody tr").length - 100;
@@ -203,5 +206,9 @@ $(document).ready(function () {
 
     </tbody>
 </table>
+
+<div class="alert alert-block">Autoscroll: <input id="autoscroll" type="checkbox" value="1" checked></div>
+
+
 </body>
 </html>

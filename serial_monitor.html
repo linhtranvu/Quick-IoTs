@@ -62,6 +62,12 @@ $(document).ready(function () {
                   <td>${line}</td>
               </tr>`);
 
+              if($("#autoscroll"). prop("checked") == true){
+                window.scrollTo(0,document.body.scrollHeight);
+              }              
+           
+
+
             if( $("#tbl_serial tbody tr").length>100){
                 numRowRemove = $("#tbl_serial tbody tr").length - 100;
                 for(j=0;j<numRowRemove;j++){
@@ -132,5 +138,7 @@ $(document).ready(function () {
 
     </tbody>
 </table>
+<div class="alert alert-block">Autoscroll: <input id="autoscroll" type="checkbox" value="1" checked></div>
+
 </body>
 </html>

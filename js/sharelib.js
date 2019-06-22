@@ -20,6 +20,7 @@ var mqtt;
 var ini;
 var { shell } = "";
 var saveFileFinish;
+var unzip;
 
 var arduinoAppName;
 var cmd;
@@ -48,6 +49,8 @@ if (userAgent.indexOf(' electron/') > -1) { //Electron code only
   fs = require('fs-extra');
   readline = require('readline');
   downloadGitRepo = require("download-git-repo") ; 
+  unzip = require('unzip');
+
   var { dialog } = require('electron').remote;
   var { shell } = require('electron').remote;
 
@@ -887,7 +890,49 @@ var app = {
               setTimeout(function(){
               app.loadAllFile(); 
                     $.unblockUI();
-              }, 3000);
+              }, 3000); //Wait 3 second for finish layout setting before load project file
+
+              setTimeout(function(){
+
+                    if($("#OMG_VERSION").val() !== pref.omg_version ){
+                        $("#div_older_omg").html(`<div class='alert alert-danger'>Current project code is <b>${pref.omg_version}</b>. You should update project or create new project</div>`)
+
+                        swal({
+                            type:"error",
+                            title:`Project code is out of date`,
+                            html:`Press Update to advoid error! <br><b style="color:red">Note: You must re-setup module after update</b>`,
+                            allowOutsideClick: false,showCancelButton: true,
+                            confirmButtonText: `Update project code!`                            
+                        }).then((result) => {
+                            if (result.value) {
+                                
+                                fs.renameSync(fileLocation+"User_config.h", fileLocation+"User_config.h.bak")
+                                fs.copySync(`${pref.appSrc}/arduino/code/${pref.omg_version}/src`, fileLocation);
+                                fs.removeSync(fileLocation+"User_config.h");
+                                fs.renameSync(fileLocation+"User_config.h.bak", fileLocation+"User_config.h");
+                                userConfigFile = fs.readFileSync(fileLocation+"User_config.h", 'utf8')
+                                userConfigFile = userConfigFile.replace($("#OMG_VERSION").val(), pref.omg_version);
+                                fs.writeFileSync(fileLocation+"User_config.h", userConfigFile, 'utf8');
+                                                                
+                                
+                                swal({
+                                    type:"success",
+                                    title:`Project code updates successfully. You must re-setup module`,
+                                }).then((result) => {
+                                    if (result.value) {
+                                  
+                                        app.openProject(fileLocation);
+                                  
+                                    }
+                                })
+                          
+                          
+                            }
+                        })
+                    }
+              
+
+                }, 5000); //Wait 5 second to update project
               
           });                
 

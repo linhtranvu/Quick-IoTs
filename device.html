@@ -24,7 +24,7 @@
 
 
 	<div class="btn-group" style="float:right">
-			<a onclick="app.openUrl(currentDevice.link)" class="btn btn-mini btn-pink btn-help" ><i class="icon  icon-lightbulb"></i> HELP ME!</a>
+			<a onclick="app.openUrl(currentDevice.link)" class="btn btn-mini btn-info btn-help" ><i class="icon  icon-lightbulb"></i> HELP ME!</a>
 		<span class="btn btn-mini btn-grey btn-device" ></span>
 	
 	</div>	
@@ -41,33 +41,38 @@
 <table style="width: 100%" class="table table-bordered table-condensed" id="tbl_omg_config">
 	<tr>
 		<td colspan="4" class="">
-			<strong>OMG VERSION: <input type="text" style="width:50px" readonly name="OMG_VERSION" value="0.9.1"> 
-			. Released date: Apr 22, 2019</strong>
-			
+			<strong>Source code version of current project: <input type="text" style="width:50px" readonly name="OMG_VERSION" value="0.9.1"> 
+			</strong>
+			<div id="div_older_omg"></div>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="4" class="widget-header header-color-red3 hasTooltip" tooltip="Network configuration for device."><strong>
 		I. NETWORK PARAMETERS</strong></td>
 	</tr>
+	<tr>
+		<td colspan="4"><div style="padding:0px;color:#0a384e;margin-bottom:0px" class="alert alert-info div_network_info"></div> </td>	
+	</tr>
 	<tr id="tr_network_setup"> 
+			
 		<td style="width:15%">Network Config: </td>
 		<td style="width:35%">
-			<select data-quote="" name="ESPWifiManualSetup" id="ESPWifiManualSetup" class="required hasTooltip" tooltip='- "Device internal Wifi": Device will broadcast wifi with SSID and password. Connect to this wifi and enter device IP to access web portal for setup network credential<br>- "Manual config": Set network credentials in config for dumping to device. It means you must edit and redump device if changing network'>
-				<option value="">--Select network config type---</option>
-				<option value="false">Device internal Wifi</option>
+			
+			<select data-quote="" name="ESPWifiManualSetup" id="ESPWifiManualSetup" class="required hasTooltip" tooltip=''>
+				<!-- <option value="">--Select network config type---</option> -->
+				<option value="false">Setup through Device Wifi</option>
 				<option value="true" >Manual config</option>
 			</select>
 		</td>
-		<td style="width:15%">Gateway (Device) name</td>
-		<td style="width:35%"><input data-command="#define" name="Gateway_Name" id="Gateway_Name" type="text" value="OpenMQTTGateway" class="required"></td>
+		<td style="width:25%">Gateway (Device) name.</td>
+		<td style="width:25%"><input data-command="#define" tooltip="Work as root path of data broadcast to MQTT server" name="Gateway_Name" id="Gateway_Name" type="text" value="OpenMQTTGateway" class="required hasTooltip"></td>
 	</tr>
 	<tr>	
 		<td colspan="4">
 		<div id="div_device_wifi_setup" >
 		<table style="width: 100%">
 			<tr >
-				<td>Device Wifi SSID</td>
+				<td>Device Wifi name</td>
 				<td>
 				<input class="hasTooltip" tooltip="this is the network name of the initial setup access point" data-command="#define" name="WifiManager_ssid" type="text" value="OpenMQTTGateway"></td>
 			</tr>
@@ -86,36 +91,38 @@
 		<div id="div_manual_network_setup">
 			<table style="width: 100%">
 				<tr >
-					<td>Wifi SSID</td>
+					<td>Wifi name device connect to</td>
 					<td><input data-command="#define" name="wifi_ssid" type="text" value="White House"></td>
 				</tr>
 				<tr>
 					<td>Wifi password</td>
 					<td><input data-command="#define" name="wifi_password" type="text" value="mnmnmnmn"></td>
-				</tr>
-				<tr>
-					<td>MQTT user</td>
-					<td><input data-command="char"  class="hasTooltip" tooltip="not compulsory only if your broker needs authentication "   data-param-name="mqtt_user[20]" name="mqtt_user" type="text"></td>
-				</tr>
-				<tr>
-					<td>MQTT password</td>
-					<td><input data-command="char"  data-param-name="mqtt_pass[30]" name="mqtt_pass" type="text"></td>
-				</tr>
+				</tr>				
+	
 				<tr>
 					<td>MQTT server IP</td>
 					<td><input data-command="char" data-param-name="mqtt_server[40]" name="mqtt_server" type="text" value="192.168.1.100"></td>
 				</tr>
 				<tr>
-					<td>MQTT host name</td>
+					<td>MQTT host name device connect to</td>
 					<td>
-					<input type="checkbox" value="1" class="checkbox_show inputbox" name="checkbox_mqtt_server_name">
-					<!-- <span class="lbl"> </span> -->
-				    <input class="field" name="mqtt_server_name" id="mqtt_server_name" type="text" value="www.mqtt_broker.com" data-hide-code="1"></td>
-				</tr>
+						<input type="checkbox" value="1" class="checkbox_show inputbox" name="checkbox_mqtt_server_name">
+						<!-- <span class="lbl"> </span> -->
+						<input class="field" name="mqtt_server_name" id="mqtt_server_name" type="text" value="www.mqtt_broker.com" data-hide-code="1">
+					</td>
+					</tr>
 				<tr>
 					<td>MQTT port</td>
 					<td><input data-command="char" data-param-name="mqtt_port[6]" name="mqtt_port" type="text" value="1883"></td>
+				</tr>							
+				<tr>
+					<td>MQTT user</td>
+					<td><input data-command="char"  class="hasTooltip" tooltip="not compulsory only if your broker needs authentication "   data-param-name="mqtt_user[20]" name="mqtt_user" type="text"></td>
 				</tr>
+					<td>MQTT password</td>
+					<td><input data-command="char"  data-param-name="mqtt_pass[30]" name="mqtt_pass" type="text"></td>
+				</tr>
+
 			</table>
 		</div>		
 		</td>
