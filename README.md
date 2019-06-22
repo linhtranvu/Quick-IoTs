@@ -1,4 +1,4 @@
-# ![](./icons/png/48x48.png)Quick IoTs - One click app for Internet of Thing
+# ![](./icons/png/48x48.png)  Quick IoTs - One click app for Internet of Thing
 
 ## Introduction
 
