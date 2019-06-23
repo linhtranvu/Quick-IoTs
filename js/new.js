@@ -153,6 +153,7 @@ var newApp = {
 				if (result.value) {
 			  
 					electronApp.relaunch();
+					app.exit(0)
 			  
 				}
 			});
