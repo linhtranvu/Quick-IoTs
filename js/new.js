@@ -148,12 +148,12 @@ var newApp = {
 			fs.writeFileSync('./preference.ini', ini.stringify(pref));
 			swal({
 				type:"success",title:"Update successfully! Please restart app to work again!",
-				allowOutsideClick: false
+				allowOutsideClick: false,confirmButtonText:"Restart"
 			}).then((result) => {
 				if (result.value) {
 			  
 					electronApp.relaunch();
-					electronApp.exit(0)
+					electronApp.exit(0);
 			  
 				}
 			});
