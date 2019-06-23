@@ -1,12 +1,12 @@
-![Quick IoTs logo](./img/qiot_logo_text.svg)  
+![Quick IoTs logo](./img/qiot_logo_text_hoz.svg)  
 # Quick IoTs - One click app for Internet of Thing
 
 
 > This app starts as an editor for [Open MQTT Gateway](<https://github.com/1technophile/OpenMQTTGateway>). Then I think It could become more, a central hub for everyone, from amateur, hobbyist, student to build their own Internet of Thing device in just **one click.** 
-
+>
 > If you just want to use app, visit http://www.quickiots.com to download and give it a try
 
-![](./img/quickiotmodel.png)
+![Quick IoTs Model](./img/quickiotmodel.png)
 
 ## Source code setup guide
 

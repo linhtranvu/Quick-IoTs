@@ -357,7 +357,7 @@ $(document).ready(function () {
 
 	$(" .btn-browser-notwork").click(function(){
 		swal({type:"error",html:`This feature only work with desktop version. Please download to use
-		<br><b><a href='http://www.quickiots.com'>DOWNLOAD</a></b>`});
+		<br><b><a target='_blank' href='http://www.quickiots.com'>DOWNLOAD</a></b>`});
 	})
 
 
