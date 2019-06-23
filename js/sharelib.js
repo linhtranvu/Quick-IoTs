@@ -2,7 +2,7 @@ const userAgent = navigator.userAgent.toLowerCase();
 var fileLocation;
 var arduinoPath;
 var pref_browser = {
-    devMode:1, //Use localhost. If devMode = 0. Use productionServer
+    devMode: 0, //Use localhost. If devMode = 0. Use productionServer
     productionServer:"http://www.quickiots.com"
 }
 

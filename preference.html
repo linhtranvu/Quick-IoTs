@@ -41,8 +41,8 @@ $(document).ready(function () {
             properties: ['openDirectory'],
             title: "Path to Arduino IDE,eg: D:\\Program Files (x86)\\Arduino"
         });
-        fileLocation = `${folderPath[0]}${path.sep}`;
-        $("#arduinoPath").val(fileLocation);
+        arduinoPath = `${folderPath[0]}${path.sep}`;
+        $("#arduinoPath").val(arduinoPath);
       }catch(e){  }
     });
 });
