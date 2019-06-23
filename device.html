@@ -11,20 +11,29 @@
 		<span class="btn btn-mini btn-danger btn-quick-build electron" ><i class="icon-cloud-upload"></i> Build & Upload</span>
 
 		<span class="btn btn-mini btn-info btn-serial electron" ><i class="icon-bolt"></i> Serial Monitor</span>
-		<span class="btn btn-mini btn-primary btn-mqtt electron" ><i class="icon-comments-alt"></i> MQTT server</span>
+		<span class="btn btn-mini btn-primary btn-mqtt electron" ><i class="icon-comments-alt"></i> MQTT Log</span>
 
 		<span class="btn btn-mini btn-primary btn-generate-config browser" ><i class="icon-edit"></i> Generate</span>
 		<span class="btn btn-mini btn-warning browser btn-browser-notwork" data-original-title="This feature only work with desktop version. Please download to use"><i class="icon-laptop"></i> Change device</span>
 		<span class="btn btn-mini btn-danger browser  btn-browser-notwork" data-original-title="This feature only work with desktop version. Please download to use"><i class="icon-cloud-upload"></i> Build&Upload</span>
 		<span class="btn btn-mini btn-info browser  btn-browser-notwork" data-original-title="This feature only work with desktop version. Please download to use"><i class="icon-bolt"></i> Serial Monitor</span>
-		<span class="btn btn-mini btn-primary browser  btn-browser-notwork" data-original-title="This feature only work with desktop version. Please download to use"><i class="icon-comments-alt"></i> MQTT server</span>		
+		<span class="btn btn-mini btn-primary browser  btn-browser-notwork" data-original-title="This feature only work with desktop version. Please download to use"><i class="icon-comments-alt"></i> MQTT Log</span>		
 		<!-- <span class="btn btn-small btn-grey browser" >Download desktop app to "Save" and "Load" config</span> -->
 
 	</div>
 
 
 	<div class="btn-group" style="float:right">
-			<a onclick="app.openUrl(currentDevice.link)" class="btn btn-mini btn-info btn-help" ><i class="icon  icon-lightbulb"></i> HELP ME!</a>
+			<span  class="btn btn-mini btn-primary btn-create-user-app electron" >
+				<i class="icon  icon-bar-chart"></i> Create Mobile App				
+			</span>
+
+			<span  class="btn btn-mini btn-primary browser btn-browser-notwork" >
+					<i class="icon  icon-lightbulb"></i> Create Mobile App				
+			</span>
+			
+			<a onclick="app.openUrl(currentDevice.link)" class="btn btn-mini btn-info btn-help electron" ><i class="icon  icon-lightbulb"></i> HELP ME!</a>
+			<a target="_blank" class="btn btn-mini btn-info btn-help-browser browser" ><i class="icon  icon-lightbulb"></i> HELP ME!</a>
 		<span class="btn btn-mini btn-grey btn-device" ></span>
 	
 	</div>	
@@ -38,7 +47,7 @@
 <div class="span9 div_container_device" style="overflow-y: scroll;">
 
 <form id="frm_omg">
-<table style="width: 100%" class="table table-bordered table-condensed" id="tbl_omg_config">
+<table style="width: 100%" class="table table-bordered table-condensed" id="tbl_onpmg_config">
 	<tr>
 		<td colspan="4" class="">
 			<strong>Source code version of current project: <input type="text" style="width:50px" readonly name="OMG_VERSION" value="0.9.1"> 

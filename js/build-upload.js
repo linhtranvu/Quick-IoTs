@@ -46,6 +46,9 @@ var buildApp = {
     if(!$(".btn-build").hasClass("disabled")){
 
       buildCondition = buildApp.checkAdruinoIDE();
+      if(buildCondition == 0){
+        return false;
+      }      
 
       if(currentDevice.board_path !== ""){ //ESP8266, ESP32
         buildCondition = await buildApp.checkBoardCode();
@@ -59,8 +62,10 @@ var buildApp = {
         // swal({type:"success",title:"Arduino IDE, Device lib found. Ready to build & upload!"})
       }
       ///////////////////START BUILD////////////////////////////////////////
+      $("#div_modal_build").modal({backdrop: 'static', keyboard: false});		
+      // var sketchPath = fileLocation.substring(0, fileLocation.length-1);
+      var sketchPath = `${pref.appSrc}/arduino/code/${pref.omg_version}`;
 
-      var sketchPath = fileLocation.substring(0, fileLocation.length-1);
       command = `"${pref.arduinoPath}${currentOs.arduino_name}"  ${currentDevice.board_command}  --pref sketchbook.path="${sketchPath}"  --port ${portList[0].comName}  --upload "${fileLocation}OpenMQTTGateway.ino"\r\n` ;
       // command += "\r\n pause"
       
@@ -84,7 +89,7 @@ var buildApp = {
           </tr>
           <tr>
               <td>${getTime()} </td>
-              <td>Status<b></b>: Compiling & Build. Please wait until build finish in Terminal!</td>
+              <td>Compiling & Uploading... Please wait until build finish in Terminal! After finsh: Open "Serial Monitor" to view device log. Open MQTT Log to view data sent through MQTT server</td>
           </tr>            
       `);         
 
@@ -96,16 +101,16 @@ var buildApp = {
 
   checkAdruinoIDE:function(){
       //Check Arduino IDE
-      if(pref.arduinoPath == ""){
+      if(pref.arduinoPath == "" || !fs.existsSync(`${pref.arduinoPath}${currentOs.arduino_name}`)){
         swal({
           type: 'warning',
-          title: 'No Arduido IDE found!',
+          title: 'No Arduino IDE found!Choose one:',
           html: `
           <div style='text-align:left'>
           <ul>
           
-            <li>Config path to your Arduino IDE in Menu->Preference</li>
-            <li>Not install! Go to Arduino website to download and install. <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Click here to go to download page</li>
+            <li><b>Have installed:</b> Config path to Arduino IDE in Menu->Preference</li>
+            <li><b>Not install:</b> Go to Arduino website to download and install. <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Click here to go to download page</li>
           <ul/>
           </div>
             <img src="./img/ide_download.JPG" width="50%"> 
@@ -130,9 +135,10 @@ var buildApp = {
       swal({
         type: "warning",
         title: "Libraries need to compile for device not found!Choose one:",
+        backdrop: 'static', keyboard: false,allowOutsideClick: false,
         html:`
         <div style="text-align: left"><ul>
-          <li>Automatic install: <a href="#c" onclick="buildApp.boardInstall()"><b>Click here</b></a>.</li>
+          <li><span class="label label-info arrowed-in-right arrowed">Recommend!</span>  Automatic install : <a href="#c" onclick="buildApp.boardInstall()"><b>Click here</b></a>.</li>
           <li> Manual install: Follow <a href="${currentDevice.lib_install_guide}" target="_blank"><b>this guide</b></a>. <b style='color:red'>Must install board version ${currentDevice.board_version}<b></li>
           </ul>
         <div>
@@ -142,27 +148,30 @@ var buildApp = {
     }   
   },
 
+
   boardInstall:async function(){
-    swal({
-      type:"warning",title:"Downloading...",
-      allowOutsideClick: false,
-      showConfirmButton: false,      
-      html:`Downloading to "${boardPath}". Please wait until next message...`
-    })
 
+    Swal.close();
+    $("#div_modal_build").modal({backdrop: 'static', keyboard: false});		
+    arduinoSettingPath = currentOs.user_path.split("<USERNAME>");
     packagePath = `${arduinoSettingPath[0]}${currentOs.username}${arduinoSettingPath[1]}/packages`;
-    fs.emptyDirSync(`${packagePath}/${currentDevice.code}`)
+    fs.emptyDirSync(`${packagePath}/${currentDevice.code}`) //Clear current package foldfer if wrong version
 
-    downloadGitRepo_p = util.promisify(downloadGitRepo);
-    await downloadGitRepo_p(currentDevice.board_download_url, packagePath);
-    fs.createReadStream(`${packagePath}/${currentDevice.code}.zip`).pipe(unzip.Extract({ path: `${packagePath}` }));
+    command = `"${pref.arduinoPath}${currentOs.arduino_name}"  ${currentDevice.board_install_command} \r\n` ;
 
-    boardExist = await buildApp.checkBoardCode();
-    if(boardExist == 1){
-      swal({type:"success",title:"Download device library successfully! Press 'Build & Upload' again."})
-    }
+    xterm.clear();
+    ptyProcess.write(command);
     
-  }
+    // END TERMINAL
+
+    app.log(command);
+    $("#frm_build_upload tbody").html(`
+        <tr>
+            <td>${getTime()} </td>
+            <td><h4><b class="red ">BOARD INSTALLING... WAIT UNTIL FINISH AND PRESS "BUILD & UPLOAD" AGAIN</b></h4></td>
+        </tr>         
+    `); 
+  }        
 
 
 }

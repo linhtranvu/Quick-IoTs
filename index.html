@@ -56,13 +56,12 @@
       if (userAgent.indexOf(' electron/') > -1) {
         app.loadOS();
         buildApp.terminal(); //ready for terminal in modal
+        new_project_condition = newApp.checkOmgVersion();
+         new_project_condition = await newApp.checkEditorVersion();        
       }      
 
 
-        new_project_condition = newApp.checkOmgVersion();
 
-
-        new_project_condition = await newApp.checkEditorVersion();
          
 
      

@@ -11,7 +11,7 @@ $(document).ready(function () {
    //Get all data from server (JSON) and processing data
 
 		
-	$(".btn-device").html("<i>Device: "+currentDevice.name+"</i>");				
+	$(".btn-device").html("<i>"+currentDevice.name+"</i>");				
 	app.drawFields("device",$("#tbl_omg_config"),"");  //Draw main layout		
 	app.drawModule(apiData); //Draw module field;
 
@@ -156,7 +156,13 @@ $(document).ready(function () {
 
 	}); //end module chooser
 
+	$(".btn-help-browser").attr("href",currentDevice.link)
 
+	$(".btn-create-user-app").click(function(){
+		Swal("Work in progress!","We are working hard to add this this feature, so you could create app to view sensor data and control gateway in a click","warning");
+	});
+
+	
 	$(".btn-device").click(function(){
 		swal({
 			showComfirmButton: false,
@@ -305,13 +311,12 @@ $(document).ready(function () {
 			if( app.checkMainForm() == true){
 
 				app.save(1); //save(1) mean save to file
-				setTimeout(function(){
-					$("#div_modal_build").modal({backdrop: 'static', keyboard: false});		
+				setTimeout(function(){					
 
 					(async function(){
 
 						portList = await app.checkPort();
-						// port.length = 3;
+						// portList.length = 3;
 						if(portList.length > 0){
 							await buildApp.buildUpload();
 							$("#port_name").html(portList[0].comName+" | "+portList[0].manufacturer)

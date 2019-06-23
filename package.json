@@ -1,5 +1,5 @@
 {
-  "name": "open-mqtt-gateway-editor",
+  "name": "quick-iots",
   "productName": "Quick IOTs",
   "version": "1.0.0",
   "description": "Build IOT device in seconds! IOT has never been easier",
@@ -12,7 +12,7 @@
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
-  "author": "Linh",
+  "author": "Tran Vu Linh:linhtranvu@gmail.com",
   "license": "MIT",
   "config": {},
   "dependencies": {

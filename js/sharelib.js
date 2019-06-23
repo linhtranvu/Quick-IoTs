@@ -1,8 +1,10 @@
-const dev_mode = 0;
-const production_server = "http://49.156.54.103"
 const userAgent = navigator.userAgent.toLowerCase();
 var fileLocation;
 var arduinoPath;
+var pref_browser = {
+    devMode:1,
+    productionServer:"http://www.quickiots.com"
+}
 
 var fs = "";
 var readline = "";
@@ -42,7 +44,6 @@ var util;
 var serialWindow = null;
 var mqttWindow = null;
 var server_config;
-
 
 if (userAgent.indexOf(' electron/') > -1) { //Electron code only
   util = require('util');
@@ -305,11 +306,9 @@ var app = {
 
 
 
-        }else{
+        }else{ //Browser!
             $(".electron").remove();
-            json += `{"devMode":"${dev_mode}",`;
-            json += `"productionServer":"${production_server}"}`;
-            pref = JSON.parse(json);
+            pref = pref_browser;
         }          
 
         
@@ -1032,8 +1031,8 @@ var app = {
         title: "MQTT server receives and sends data to and from device. Try this:",
         html:`<div style="text-align:left">
         <ul>
-          <li>Use free test server. Host: "test.mosquitto.org", port 1883</li>
-          <li>Or download <a href="https://mosquitto.org/download/" target="_blank">MOSQUITTO</a>, install. Set host to "localhost" or IP of machine Mosquitto installed. Port 1883</li>
+          <li><b>MQTT sever installed:</b> Double check server IP, username and password</li>
+          <li><b>Don't have MQTT server: </b> Download <a href="https://mosquitto.org/download/" target="_blank">MOSQUITTO</a>, install. Set host to "localhost" or IP of machine Mosquitto installed. Port 1883</li>
         </ul>
         </div>`
       })

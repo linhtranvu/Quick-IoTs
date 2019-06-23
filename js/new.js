@@ -144,12 +144,19 @@ var newApp = {
 
 		if (fs.existsSync(`${downloadPath}/version/version_${server_config.editor_version}.ini`)) {
 
-			swal({
-				type:"success",title:"Update successfully! Please restart app to work again!"
-				,allowOutsideClick: false,showConfirmButton:false
-			});
 			pref.editor_version = server_config.editor_version;
 			fs.writeFileSync('./preference.ini', ini.stringify(pref));
+			swal({
+				type:"success",title:"Update successfully! Please restart app to work again!",
+				allowOutsideClick: false
+			}).then((result) => {
+				if (result.value) {
+			  
+					electronApp.relaunch();
+			  
+				}
+			});
+
 
 		}else{
 			swal({type:"error",title:"Update fail! Please update again!"});

@@ -8,7 +8,7 @@ $(document).ready(function () {
     $("#frm_preference").autofill(pref);
 
     
-    $(":input").addClass("required");
+    // $(":input").addClass("required");
     $(".btn-save").click(function(){
         ret = $("#frm_preference").valid();
         if(ret == true){
@@ -73,7 +73,7 @@ $(document).ready(function () {
                   <td></td>
                   <td>Dev mode</td>
                   <td>
-                      <select name="devMode" id="devMode">
+                      <select class="required" name="devMode" id="devMode">
                           <option value="0">False</option>
                           <option value="1">True</option>
                       </select>
@@ -83,15 +83,15 @@ $(document).ready(function () {
               <tr>
                   <td></td>
                   <td>Production server</td>
-                  <td><input type = "text" name="productionServer" id="productionServer"/></td>
-                  <td>Production Server (IP,Domain), http with NO SLASH at end. Example: http://49.156.54.130</td>
+                  <td><input type = "text" name="productionServer" id="productionServer" class="required"/></td>
+                  <td>Production Server, http with NO SLASH at end. Example: http://www.quickiots.com</td>
               </tr>      
               <tr>
                   <td></td>
                   <td>Arduino Path</td>
                   <td>
                     <div class="btn-group">
-                    <input readonly type = "text" name="arduinoPath" id="arduinoPath"/>
+                    <input class="required" readonly type = "text" name="arduinoPath" id="arduinoPath"/>
                     <btn class="btn btn-small btn-info btn-arduino-path-folder"><i class="icon-folder-open"></i></btn>
                   </div>
                   </td>
