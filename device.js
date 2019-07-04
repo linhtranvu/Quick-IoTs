@@ -321,7 +321,19 @@ $(document).ready(function () {
 							await buildApp.buildUpload();
 							$("#port_name").html(portList[0].comName+" | "+portList[0].manufacturer)
 						}else{
-							swal({type:"error",title:"No device found!"})
+							swal({
+								type:"error",title:"No device found!",
+								html:`<div style="text-align: left">
+    <ul>
+        <li>
+            Plug device to USB of computer, <a href="./img/device_usb_plug.png" target="_blank">example picture</a>         
+
+        </li>
+        <li>Have plugged: Re-plug your device</li>
+        <li>I just buy device: Driver for device need to be installed. Follow <a href="./help/driver.html" target="_blank">this guide to install driver</a> for each device</li>
+    </ul>
+</div>`
+							})
 						}			
 					})()
 
