@@ -8,8 +8,11 @@ $(document).ready(function () {
 
     $( "body" ).undelegate( ".btn-choose-device","click").delegate( ".btn-choose-device", "click", function() {
 
-       query = `select * from ? where id = "${$(this).data("device-id")}" ` ;   
+     
+       query = `select * from ? where id = ${$(this).attr("data-device-id")} ` ;
+       
         currentDevice =  alasql(query,[device])[0];
+
 
         (async function () {  
 
